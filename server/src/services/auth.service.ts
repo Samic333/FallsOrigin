@@ -73,7 +73,7 @@ class AuthService {
      */
     generateToken(payload: JWTPayload): string {
         return jwt.sign(payload, env.JWT_SECRET, {
-            expiresIn: env.JWT_EXPIRATION,
+            expiresIn: env.JWT_EXPIRATION as any, // Cast to any to avoid strict type check on string vs number/seconds
         });
     }
 

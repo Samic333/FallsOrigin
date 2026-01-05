@@ -8,7 +8,7 @@ import { logger } from '../utils/logger';
 const router = Router();
 
 // Get approved reviews (public)
-router.get('/approved', async (req: Request, res: Response) => {
+router.get('/approved', async (_req: any, res: any) => {
     try {
         const reviews = await db.query(
             "SELECT id, customer_name, rating, comment, created_at FROM reviews WHERE status = 'approved' ORDER BY created_at DESC LIMIT 50"

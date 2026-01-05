@@ -30,7 +30,7 @@ router.post(
 );
 
 // Get all orders (admin only)
-router.get('/orders', authenticateToken, async (req: Request, res: Response) => {
+router.get('/orders', authenticateToken, async (_req: any, res: any) => {
     try {
         const orders = await db.query(
             'SELECT * FROM orders ORDER BY created_at DESC'
@@ -43,7 +43,7 @@ router.get('/orders', authenticateToken, async (req: Request, res: Response) => 
 });
 
 // Get all contact messages (admin only)
-router.get('/messages', authenticateToken, async (req: Request, res: Response) => {
+router.get('/messages', authenticateToken, async (_req: any, res: any) => {
     try {
         const messages = await db.query(
             'SELECT * FROM contact_messages ORDER BY created_at DESC'
@@ -56,7 +56,7 @@ router.get('/messages', authenticateToken, async (req: Request, res: Response) =
 });
 
 // Mark message as read (admin only)
-router.put('/messages/:id/read', authenticateToken, async (req: Request, res: Response) => {
+router.put('/messages/:id/read', authenticateToken, async (req: any, res: any) => {
     try {
         await db.query('UPDATE contact_messages SET read = true WHERE id = $1', [req.params.id]);
         res.json({ message: 'Message marked as read' });
@@ -67,7 +67,7 @@ router.put('/messages/:id/read', authenticateToken, async (req: Request, res: Re
 });
 
 // Get all reviews (admin only)
-router.get('/reviews', authenticateToken, async (req: Request, res: Response) => {
+router.get('/reviews', authenticateToken, async (_req: any, res: any) => {
     try {
         const reviews = await db.query(
             'SELECT * FROM reviews ORDER BY created_at DESC'
@@ -104,7 +104,7 @@ router.put('/reviews/:id/reject', authenticateToken, async (req: Request, res: R
 });
 
 // Get analytics (admin only)
-router.get('/analytics', authenticateToken, async (req: Request, res: Response) => {
+router.get('/analytics', authenticateToken, async (_req: any, res: any) => {
     try {
         const views = await db.query(
             "SELECT COUNT(*) as count FROM analytics_events WHERE event_type = 'page_view'"

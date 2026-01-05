@@ -14,10 +14,10 @@ interface DeliveryCalculation {
 }
 
 class DeliveryService {
-    private geocoder: NodeGeocoder.Geocoder;
+    private geocoder: any;
 
     constructor() {
-        const options: NodeGeocoder.Options = {
+        const options: any = {
             provider: env.GEOCODING_PROVIDER,
             apiKey: env.GEOCODING_PROVIDER === 'google' ? env.GOOGLE_MAPS_API_KEY : env.OPENCAGE_API_KEY,
             formatter: null,

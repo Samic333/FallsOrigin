@@ -58,7 +58,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 // Health check endpoint
-app.get('/health', async (req: Request, res: Response) => {
+app.get('/health', async (_req: any, res: any) => {
     const dbHealthy = await db.healthCheck();
 
     if (dbHealthy) {
@@ -91,18 +91,18 @@ if (!isDevelopment) {
     app.use(express.static(frontendPath));
 
     // SPA fallback - serve index.html for all non-API routes
-    app.get('*', (req: Request, res: Response) => {
+    app.get('*', (_req: Request, res: Response) => {
         res.sendFile(path.join(frontendPath, 'index.html'));
     });
 }
 
 // 404 handler for API routes
-app.use('/api/*', (req: Request, res: Response) => {
+app.use('/api/*', (_req: Request, res: Response) => {
     res.status(404).json({ error: 'API endpoint not found' });
 });
 
 // Global error handler
-app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
     logger.error('Unhandled error', {
         error: err.message,
         stack: err.stack,

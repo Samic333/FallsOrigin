@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import { body } from 'express-validator';
 import { db } from '../config/database';
 import { authenticateToken } from '../middleware/auth';
@@ -8,7 +8,7 @@ import { logger } from '../utils/logger';
 const router = Router();
 
 // Get all products
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (_req: any, res: any) => {
     try {
         const products = await db.query(
             'SELECT * FROM products ORDER BY created_at DESC'
@@ -21,7 +21,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Get single product
-router.get('/:id', async (req: Request, res: Response) => {
+router.get('/:id', async (req: any, res: any) => {
     try {
         const products = await db.query(
             'SELECT * FROM products WHERE id = $1',
@@ -49,7 +49,7 @@ router.post(
         body('price').isFloat({ min: 0 }).withMessage('Price must be a positive number'),
         body('image_url').trim().notEmpty().withMessage('Image URL is required'),
     ]),
-    async (req: Request, res: Response) => {
+    async (req: any, res: any) => {
         try {
             const { name, description, price, weight, image_url, origin, roast_intensity, roast_notes, type } = req.body;
             const id = 'PROD-' + Date.now();
@@ -71,7 +71,7 @@ router.post(
 );
 
 // Update product (admin only)
-router.put('/:id', authenticateToken, async (req: Request, res: Response) => {
+router.put('/:id', authenticateToken, async (req: any, res: any) => {
     try {
         const { name, description, price, weight, image_url, origin, roast_intensity, roast_notes, type } = req.body;
 
@@ -98,7 +98,7 @@ router.put('/:id', authenticateToken, async (req: Request, res: Response) => {
 });
 
 // Delete product (admin only)
-router.delete('/:id', authenticateToken, async (req: Request, res: Response) => {
+router.delete('/:id', authenticateToken, async (req: any, res: any) => {
     try {
         await db.query('DELETE FROM products WHERE id = $1', [req.params.id]);
         logger.info('Product deleted', { productId: req.params.id });

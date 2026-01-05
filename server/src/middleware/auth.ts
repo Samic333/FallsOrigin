@@ -43,8 +43,8 @@ export const authenticateToken = (
  * Optional authentication - attaches user if token is valid, but doesn't require it
  */
 export const optionalAuth = (
-    req: AuthRequest,
-    res: Response,
+    req: any,
+    _res: any,
     next: NextFunction
 ): void => {
     try {
