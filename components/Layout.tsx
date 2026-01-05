@@ -3,60 +3,19 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, User, Globe } from 'lucide-react';
 import { Logo, BrandTitle } from './Logo';
 
+import { useLanguage } from '../contexts/LanguageContext';
+
 interface LayoutProps {
   children: React.ReactNode;
   cartCount: number;
   onOpenCart: () => void;
 }
 
-type Language = 'en' | 'fr';
-
 const Layout: React.FC<LayoutProps> = ({ children, cartCount, onOpenCart }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [lang, setLang] = useState<Language>((localStorage.getItem('foc_lang') as Language) || 'en');
+  const { lang, setLang, t } = useLanguage();
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
-
-  useEffect(() => {
-    localStorage.setItem('foc_lang', lang);
-  }, [lang]);
-
-  const translations = {
-    en: {
-      home: 'Home',
-      shop: 'Shop',
-      track: 'Track Order',
-      contact: 'Contact',
-      discovery: 'Discovery',
-      ourRoast: 'Our Roast',
-      orderStatus: 'Order Status',
-      legal: 'Legal',
-      shipping: 'Shipping',
-      refunds: 'Refunds',
-      terms: 'Terms',
-      footerDesc: 'Ethically sourced, masterfully roasted. Bringing the heart of Ethiopian coffee culture to your doorstep in Canada.',
-      footerCopyright: '© 2024 Falls Origin Coffee Roasters.',
-      footerLocation: 'Hand-crafted in Toronto, Canada.'
-    },
-    fr: {
-      home: 'Accueil',
-      shop: 'Boutique',
-      track: 'Suivi',
-      contact: 'Contact',
-      discovery: 'Découverte',
-      ourRoast: 'Nos Torréfactions',
-      orderStatus: 'Statut Commande',
-      legal: 'Légal',
-      shipping: 'Livraison',
-      refunds: 'Remboursements',
-      terms: 'Conditions',
-      footerDesc: 'Sourcing éthique, torréfaction de maître. Apporter le cœur de la culture du café éthiopien à votre porte au Canada.',
-      footerCopyright: '© 2024 Falls Origin Coffee Roasters.',
-      footerLocation: 'Fabriqué à Toronto, Canada.'
-    }
-  };
-
-  const t = translations[lang];
 
   const navLinks = [
     { name: t.home, href: '/' },
@@ -99,13 +58,13 @@ const Layout: React.FC<LayoutProps> = ({ children, cartCount, onOpenCart }) => {
             <div className="flex items-center space-x-2 sm:space-x-6">
               {/* Language Selector */}
               <div className="flex items-center bg-white/5 rounded-full p-1 border border-white/5 mr-2">
-                <button 
+                <button
                   onClick={() => setLang('en')}
                   className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full transition-all ${lang === 'en' ? 'bg-amber-600 text-white' : 'text-white/20 hover:text-white/40'}`}
                 >
                   EN
                 </button>
-                <button 
+                <button
                   onClick={() => setLang('fr')}
                   className={`px-3 py-1 text-[9px] font-black uppercase tracking-widest rounded-full transition-all ${lang === 'fr' ? 'bg-amber-600 text-white' : 'text-white/20 hover:text-white/40'}`}
                 >
@@ -138,10 +97,10 @@ const Layout: React.FC<LayoutProps> = ({ children, cartCount, onOpenCart }) => {
                 </>
               )}
               {isAdminPage && (
-                 <div className="flex items-center space-x-2 text-amber-600/40 text-[9px] font-black uppercase tracking-widest">
-                    <Globe className="w-3 h-3" />
-                    <span>System Language</span>
-                 </div>
+                <div className="flex items-center space-x-2 text-amber-600/40 text-[9px] font-black uppercase tracking-widest">
+                  <Globe className="w-3 h-3" />
+                  <span>System Language</span>
+                </div>
               )}
             </div>
           </div>
@@ -183,13 +142,13 @@ const Layout: React.FC<LayoutProps> = ({ children, cartCount, onOpenCart }) => {
                   {t.footerDesc}
                 </p>
                 <div className="flex space-x-6">
-                  <button 
+                  <button
                     onClick={() => handleSocialClick('Instagram')}
                     className="text-white/30 hover:text-white transition-colors text-[10px] uppercase tracking-widest font-black cursor-pointer"
                   >
                     Instagram
                   </button>
-                  <button 
+                  <button
                     onClick={() => handleSocialClick('Twitter')}
                     className="text-white/30 hover:text-white transition-colors text-[10px] uppercase tracking-widest font-black cursor-pointer"
                   >

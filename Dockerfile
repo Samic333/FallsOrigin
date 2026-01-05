@@ -19,6 +19,7 @@ COPY types.ts ./
 COPY constants.tsx ./
 COPY App.tsx ./
 COPY index.tsx ./
+COPY public ./public
 
 # Install dependencies and build
 RUN npm install --legacy-peer-deps
