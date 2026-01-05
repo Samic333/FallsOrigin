@@ -1,0 +1,7 @@
+{
+  "name": "Falls Origin Coffee - Premium E-commerce",
+  "description": "A luxury coffee e-commerce platform with smart admin tools, local/postal delivery logic, and a minimalist matte black aesthetic.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
