@@ -15,6 +15,7 @@ COPY index.html ./
 COPY components ./components
 COPY pages ./pages
 COPY services ./services
+COPY contexts ./contexts
 COPY types.ts ./
 COPY constants.tsx ./
 COPY App.tsx ./
