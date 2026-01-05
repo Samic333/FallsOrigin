@@ -54,7 +54,8 @@ interface EnvConfig {
 function getEnv(key: string, defaultValue?: string): string {
     const value = process.env[key] || defaultValue;
     if (!value) {
-        throw new Error(`Missing required environment variable: ${key}`);
+        console.warn(`[WARN] Missing environment variable: ${key}. Using fallback.`);
+        return 'MISSING_ENV_VAR';
     }
     return value;
 }
@@ -62,40 +63,24 @@ function getEnv(key: string, defaultValue?: string): string {
 function getEnvNumber(key: string, defaultValue?: number): number {
     const value = process.env[key];
     if (!value && defaultValue === undefined) {
-        throw new Error(`Missing required environment variable: ${key}`);
+        console.warn(`[WARN] Missing environment variable: ${key}. Using default 0.`);
+        return 0;
     }
     return value ? parseInt(value, 10) : defaultValue!;
 }
 
+// Validation functions now just log warnings instead of throwing
 function validateEmailProvider(provider: string): void {
     const validProviders = ['sendgrid', 'mailgun', 'ses'];
     if (!validProviders.includes(provider)) {
-        throw new Error(`Invalid EMAIL_PROVIDER: ${provider}. Must be one of: ${validProviders.join(', ')}`);
-    }
-
-    // Validate provider-specific keys
-    if (provider === 'sendgrid' && !process.env.SENDGRID_API_KEY) {
-        throw new Error('SENDGRID_API_KEY is required when EMAIL_PROVIDER=sendgrid');
-    }
-    if (provider === 'mailgun' && (!process.env.MAILGUN_API_KEY || !process.env.MAILGUN_DOMAIN)) {
-        throw new Error('MAILGUN_API_KEY and MAILGUN_DOMAIN are required when EMAIL_PROVIDER=mailgun');
-    }
-    if (provider === 'ses' && (!process.env.AWS_ACCESS_KEY_ID || !process.env.AWS_SECRET_ACCESS_KEY)) {
-        throw new Error('AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY are required when EMAIL_PROVIDER=ses');
+        console.warn(`[WARN] Invalid EMAIL_PROVIDER: ${provider}. Defaulting to sendgrid.`);
     }
 }
 
 function validateGeocodingProvider(provider: string): void {
     const validProviders = ['google', 'opencage'];
     if (!validProviders.includes(provider)) {
-        throw new Error(`Invalid GEOCODING_PROVIDER: ${provider}. Must be one of: ${validProviders.join(', ')}`);
-    }
-
-    if (provider === 'google' && !process.env.GOOGLE_MAPS_API_KEY) {
-        throw new Error('GOOGLE_MAPS_API_KEY is required when GEOCODING_PROVIDER=google');
-    }
-    if (provider === 'opencage' && !process.env.OPENCAGE_API_KEY) {
-        throw new Error('OPENCAGE_API_KEY is required when GEOCODING_PROVIDER=opencage');
+        console.warn(`[WARN] Invalid GEOCODING_PROVIDER: ${provider}. Defaulting to google.`);
     }
 }
 

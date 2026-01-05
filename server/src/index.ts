@@ -87,7 +87,12 @@ app.use('/api/webhooks', webhooksRouter);
 
 // Serve static frontend files in production
 if (!isDevelopment) {
-    const frontendPath = path.join(__dirname, '../../dist-frontend');
+    // In Docker: /app/dist-frontend. In Dev: ../../dist-frontend (or similar)
+    // We check absolute path first for Docker
+    let frontendPath = path.join(process.cwd(), 'dist-frontend');
+    if (!require('fs').existsSync(frontendPath)) {
+        frontendPath = path.join(__dirname, '../../dist-frontend');
+    }
     app.use(express.static(frontendPath));
 
     // SPA fallback - serve index.html for all non-API routes
@@ -120,9 +125,10 @@ app.use((err: Error, req: Request, res: Response, _next: NextFunction) => {
 const PORT = env.PORT;
 
 app.listen(PORT, () => {
-    logger.info(`Server started on port ${PORT}`, {
+    logger.info(`Server started listening`, {
         environment: env.NODE_ENV,
         port: PORT,
+        url: `http://localhost:${PORT}`
     });
 
     // Test database connection
