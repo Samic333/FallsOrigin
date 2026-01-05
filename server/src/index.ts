@@ -87,19 +87,27 @@ app.use('/api/contact', contactRouter);
 app.use('/api/reviews', reviewsRouter);
 app.use('/api/webhooks', webhooksRouter);
 
-// Serve static frontend files in production
-if (!isDevelopment) {
-    // In Docker: /app/dist-frontend. In Dev: ../../dist-frontend (or similar)
-    // We check absolute path first for Docker
-    let frontendPath = path.join(process.cwd(), 'dist-frontend');
-    if (!require('fs').existsSync(frontendPath)) {
-        frontendPath = path.join(__dirname, '../../dist-frontend');
-    }
+// Serve static frontend files - Fail-safe: Check if directory exists
+// In Docker: /app/dist-frontend. In Dev: ../../dist-frontend
+const dockerFrontendPath = path.join(process.cwd(), 'dist-frontend');
+const localFrontendPath = path.join(__dirname, '../../dist-frontend');
+let frontendPath: string | null = null;
+
+if (require('fs').existsSync(dockerFrontendPath)) {
+    frontendPath = dockerFrontendPath;
+} else if (require('fs').existsSync(localFrontendPath)) {
+    frontendPath = localFrontendPath;
+}
+
+// Serve if found AND (not development OR explicitly requested)
+// We prioritize serving if it exists in a production-like path (Docker)
+if (frontendPath && (!isDevelopment || frontendPath === dockerFrontendPath)) {
+    logger.info(`Serving static frontend from: ${frontendPath}`);
     app.use(express.static(frontendPath));
 
     // SPA fallback - serve index.html for all non-API routes
     app.get('*', (_req: Request, res: Response) => {
-        res.sendFile(path.join(frontendPath, 'index.html'));
+        res.sendFile(path.join(frontendPath!, 'index.html'));
     });
 }
 

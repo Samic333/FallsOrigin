@@ -63,6 +63,9 @@ COPY server/migrations ./migrations
 # Create logs directory
 RUN mkdir -p logs
 
+# Set production environment
+ENV NODE_ENV=production
+
 # Expose port (Cloud Run uses PORT env var)
 EXPOSE 8080
 
