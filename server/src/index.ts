@@ -68,8 +68,10 @@ app.get('/health', async (_req: any, res: any) => {
             environment: env.NODE_ENV,
         });
     } else {
-        res.status(503).json({
-            status: 'unhealthy',
+        // Return 200 even if DB is down so Cloud Run keeps the container alive
+        // to serve the frontend static files.
+        res.status(200).json({
+            status: 'degraded',
             timestamp: new Date().toISOString(),
             error: 'Database connection failed',
         });
