@@ -141,6 +141,23 @@ app.listen(PORT, () => {
         url: `http://localhost:${PORT}`
     });
 
+    // DEBUG: Log filesystem state to find where frontend files are
+    const fs = require('fs');
+    try {
+        const cwd = process.cwd();
+        logger.info(`DEBUG: CWD is ${cwd}`);
+        logger.info(`DEBUG: Directory contents of ${cwd}:`, fs.readdirSync(cwd));
+
+        const distFrontend = path.join(cwd, 'dist-frontend');
+        if (fs.existsSync(distFrontend)) {
+            logger.info(`DEBUG: dist-frontend exists. Contents:`, fs.readdirSync(distFrontend));
+        } else {
+            logger.info(`DEBUG: dist-frontend DOS NOT EXIST at ${distFrontend}`);
+        }
+    } catch (err) {
+        logger.error(`DEBUG: Error check filesystem: ${(err as Error).message}`);
+    }
+
     // Test database connection
     db.healthCheck().then((healthy) => {
         if (healthy) {
