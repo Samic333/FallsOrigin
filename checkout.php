@@ -112,13 +112,17 @@ async function calculateDelivery() {
 
 async function goToPaymentStep() {
     const email = document.getElementById('email').value;
-    // Internal handler logic for Payment Intent would ideally be separate, 
-    // but here we demonstrate internal redirect/AJAX
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    
     const res = await fetch('create-intent.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: `email=${encodeURIComponent(email)}&total=${subtotal + shippingCost}`
+        headers: { 
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRF-Token': csrfToken
+        },
+        body: `email=${encodeURIComponent(email)}&total=${subtotal + shippingCost}&csrf_token=${csrfToken}`
     });
+
     const { clientSecret, error } = await res.json();
     if (error) { alert(error); return; }
 
@@ -145,11 +149,17 @@ async function goToPaymentStep() {
 }
 
 async function confirmOrder(pi) {
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
     const res = await fetch('confirm-order.php', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+            'Content-Type': 'application/json',
+            'X-CSRF-Token': csrfToken
+        },
         body: JSON.stringify({
+            csrf_token: csrfToken,
             email: document.getElementById('email').value,
+
             customerName: document.getElementById('name').value,
             address: document.getElementById('address').value,
             city: document.getElementById('city').value,

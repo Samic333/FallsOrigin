@@ -3,7 +3,11 @@ require_once __DIR__ . '/../includes/functions.php';
 require_once __DIR__ . '/../includes/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
     $username = $_POST['username'];
+
     $password = $_POST['password'];
 
     $db = DB::getInstance();
@@ -43,6 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-8 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl text-center"><?php echo $error; ?></div>
         <?php endif; ?>
         <form action="login.php" method="POST" class="space-y-8">
+            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+
             <div>
                 <label class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 block mb-3 ml-2">Terminal Identity</label>
                 <input type="text" name="username" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs font-bold focus:outline-none focus:border-amber-600 transition-all">

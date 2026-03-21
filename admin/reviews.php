@@ -5,14 +5,17 @@ require_once __DIR__ . '/../includes/admin_header.php';
 $db = DB::getInstance();
 
 // Handle Actions
-if (isset($_GET['action']) && isset($_GET['id'])) {
-    $action = $_GET['action'];
-    $id = $_GET['id'];
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
+    $id = (int)$_POST['id'];
+    $action = $_POST['action'];
     $status = ($action === 'approve') ? 'approved' : 'rejected';
     
     $stmt = $db->prepare("UPDATE reviews SET status = ? WHERE id = ?");
     $stmt->execute([$status, $id]);
-    log_admin_action('Moderate Review', "Review {$id} status updated to {$status}.");
+    log_admin_action('Moderate Review', "Review #{$id} set to {$status}.");
     $msg = "Review status updated to " . strtoupper($status) . ".";
 }
 
@@ -43,16 +46,28 @@ $reviews = $db->query("SELECT * FROM reviews ORDER BY created_at DESC")->fetchAl
                             </div>
                             <span class="text-[9px] font-black uppercase tracking-[0.3em] text-white/40">Verified Acquisition</span>
                         </div>
-                        <span class="<?php echo ($rev['status'] === 'pending') ? 'text-amber-600/60' : (($rev['status'] === 'approved') ? 'text-green-600/60' : 'text-red-600/60'); ?> text-[8px] font-black uppercase tracking-widest border border-white/5 bg-white/[0.02] px-4 py-1.5 rounded-full"><?php echo $rev['status']; ?></span>
+                        <span class="<?php echo ($rev['status'] === 'pending') ? 'text-amber-600/60' : (($rev['status'] === 'approved') ? 'text-green-600/60' : 'text-red-600/60'); ?> text-[8px] font-black uppercase tracking-widest border border-white/5 bg-white/[0.02] px-4 py-1.5 rounded-full uppercase"><?php echo $rev['status']; ?></span>
                     </div>
                     <div class="mb-10">
                         <p class="text-white text-lg font-serif italic mb-4">"<?php echo e($rev['comment']); ?>"</p>
                         <p class="text-[10px] font-black text-white uppercase tracking-widest"><?php echo e($rev['customer_name']); ?></p>
                     </div>
-                    <div class="flex space-x-6 border-t border-white/[0.02] pt-8">
-                        <?php if ($rev['status'] !== 'approved'): ?><a href="?action=approve&id=<?php echo $rev['id']; ?>" class="text-[9px] font-black uppercase tracking-widest text-green-500/60 hover:text-green-500 transition-colors">Authorize Public Access</a><?php endif; ?>
-                        <?php if ($rev['status'] !== 'rejected'): ?><a href="?action=reject&id=<?php echo $rev['id']; ?>" class="text-[9px] font-black uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-colors">Suppress Sentiment</a><?php endif; ?>
-                    </div>
+                    <?php if($rev['status'] === 'pending'): ?>
+                        <div class="flex space-x-6 border-t border-white/[0.02] pt-8">
+                            <form action="reviews.php" method="POST" class="inline">
+                                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                                <input type="hidden" name="id" value="<?php echo $rev['id']; ?>">
+                                <input type="hidden" name="action" value="approve">
+                                <button type="submit" class="text-[9px] font-black uppercase tracking-widest text-green-500/60 hover:text-green-500 transition-colors">Authorize Public Access</button>
+                            </form>
+                            <form action="reviews.php" method="POST" class="inline">
+                                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                                <input type="hidden" name="id" value="<?php echo $rev['id']; ?>">
+                                <input type="hidden" name="action" value="reject">
+                                <button type="submit" class="text-[9px] font-black uppercase tracking-widest text-red-500/60 hover:text-red-500 transition-colors">Suppress Sentiment</button>
+                            </form>
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <?php endforeach; ?>
             <?php endif; ?>

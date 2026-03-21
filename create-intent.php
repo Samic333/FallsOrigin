@@ -4,6 +4,15 @@ require_once __DIR__ . '/includes/db.php';
 
 header('Content-Type: application/json');
 
+// Validate CSRF
+$csrfToken = $_POST['csrf_token'] ?? $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+if (!validate_csrf_token($csrfToken)) {
+    http_response_code(403);
+    echo json_encode(['error' => 'CSRF token validation failed.']);
+    exit;
+}
+
+
 $email = $_POST['email'] ?? 'unknown';
 $total = floatval($_POST['total'] ?? 0);
 $total_cents = round($total * 100);

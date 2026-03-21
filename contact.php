@@ -4,7 +4,11 @@ require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/mail.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
     $name = $_POST['name'];
+
     $email = $_POST['email'];
     $subject = $_POST['subject'];
     $message = $_POST['message'];
@@ -33,6 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form action="contact.php" method="POST" class="space-y-10">
+                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
                         <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Identity</label>

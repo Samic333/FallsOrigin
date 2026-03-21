@@ -9,7 +9,11 @@ $db = DB::getInstance();
 
 // Handle Update
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
     if (isset($_POST['status'])) {
+
         $status = $_POST['status'];
         $tracking = $_POST['tracking_number'];
         $eta = $_POST['eta'];
@@ -100,10 +104,23 @@ $items = json_decode($order['items'], true);
         <div class="space-y-12">
             <div class="bg-[#0a0a0a] border border-white/5 p-10 rounded-[3rem] sticky top-12">
                 <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white mb-10">Status Propagation</h3>
+                
+                <!-- Future Stripe/Finance Placeholder -->
+                <div class="mb-8 p-6 bg-amber-600/5 border border-amber-600/10 rounded-2xl">
+                    <p class="text-[8px] font-black uppercase tracking-widest text-amber-600/40 mb-2 italic">Future Integration Point</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] font-black uppercase tracking-widest text-white/20">Stripe Sync</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-[7px] font-black uppercase tracking-widest text-white/10">Disabled</span>
+                    </div>
+                </div>
+
                 <?php if (isset($review_msg)): ?>
+
                     <div class="mb-8 px-6 py-3 bg-amber-600/10 border border-amber-600/20 text-amber-600 text-[9px] font-black uppercase tracking-widest rounded-xl"><?php echo $review_msg; ?></div>
                 <?php endif; ?>
                 <form action="order-view.php?id=<?php echo $order['id']; ?>" method="POST" class="space-y-8">
+                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+
                     <div>
                         <label class="text-[8px] font-black uppercase tracking-widest text-white/20 block mb-4">Current Phase</label>
                         <select name="status" class="w-full bg-stone-900 border border-white/5 p-4 rounded-xl text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-amber-600 transition-all appearance-none">
@@ -129,11 +146,22 @@ $items = json_decode($order['items'], true);
 
                 <?php if ($order['status'] === 'Delivered' && !$order['review_email_sent']): ?>
                 <form action="order-view.php?id=<?php echo $order['id']; ?>" method="POST" class="mt-8 pt-8 border-t border-white/5">
+                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                     <input type="hidden" name="trigger_review" value="1">
+
                     <button type="submit" class="w-full py-4 border border-amber-600/30 text-amber-600 font-black uppercase text-[9px] tracking-[0.3em] hover:bg-amber-600 hover:text-white transition-all rounded-xl">Dispatch Review Inquiry</button>
                 </form>
                 <?php endif; ?>
+
+                <!-- Future Signature Capture Placeholder -->
+                <div class="mt-8 pt-8 border-t border-white/5">
+                    <p class="text-[8px] font-black uppercase tracking-widest text-white/10 mb-4 italic">Proof of Possession (Future)</p>
+                    <div class="h-24 bg-white/[0.01] border border-dashed border-white/5 rounded-xl flex items-center justify-center">
+                        <span class="text-[8px] font-black uppercase tracking-widest text-white/5 font-mono">Signature Canvas Placeholder</span>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>

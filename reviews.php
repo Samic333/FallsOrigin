@@ -6,7 +6,11 @@ $orderId = $_GET['order'] ?? null;
 $msg = null;
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
     $orderId = $_POST['order_id'];
+
     $name = $_POST['customer_name'];
     $rating = (int)$_POST['rating'];
     $comment = $_POST['comment'];
@@ -34,6 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="text-center"><a href="shop.php" class="text-white/20 hover:text-white text-[9px] font-black uppercase tracking-[0.4em] transition-colors">Return to Catalog</a></div>
             <?php else: ?>
                 <form action="reviews.php" method="POST" class="space-y-12">
+                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+
                     <input type="hidden" name="order_id" value="<?php echo e($orderId); ?>">
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
