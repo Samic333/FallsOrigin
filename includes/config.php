@@ -7,10 +7,11 @@ ini_set('display_errors', 1);
 
 // Database Configuration
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'falls_origin_coffee');
-define('DB_USER', 'root');
-define('DB_PASS', '');
+define('DB_NAME', 'fallphyl_fallscoffee');
+define('DB_USER', 'fallphyl_fallscoffee');
+define('DB_PASS', 'Ask#113773ask');
 define('DB_CHARSET', 'utf8mb4');
+
 
 // Stripe Configuration
 define('STRIPE_PUBLIC_KEY', 'pk_test_your_key_here');
