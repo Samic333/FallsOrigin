@@ -94,4 +94,4 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     </div>
 </div>
 
-<?php include __DIR__ . '/includes/footer.php'; ?>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

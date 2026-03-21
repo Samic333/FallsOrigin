@@ -22,11 +22,6 @@ define('APP_URL', 'http://localhost/falls-origin');
 define('APP_NAME', 'Falls Origin Coffee');
 define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
 
-// Session config
-session_start();
-
-// Security Utility
-function e($text) {
-    return htmlspecialchars($text, ENT_QUOTES, 'UTF-8');
-}
+// All security and session utilities moved to functions.php
 ?>
+

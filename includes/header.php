@@ -47,7 +47,7 @@ require_once __DIR__ . '/db.php';
                     </a>
                 </div>
 
-                <?php include __DIR__ . '/nav.php'; ?>
+                <?php require_once __DIR__ . '/nav.php'; ?>
             </div>
         </div>
     </header>
