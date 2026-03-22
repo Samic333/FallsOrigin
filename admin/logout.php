@@ -7,6 +7,6 @@ if (isset($_SESSION['admin_user'])) {
     log_admin_action('Logout', 'Admin session terminated by user.');
 }
 session_destroy();
-header('Location: login.php');
+header('Location: ../index.php');
 exit;
 ?>
