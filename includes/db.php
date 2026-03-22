@@ -47,7 +47,7 @@ class DB {
     }
 
     public function lastInsertId() {
-        if ($this->is_mock) return "MOCK-" . uniqid();
+        if ($this->is_mock) return $_SESSION['last_mock_insert_id'] ?? "MOCK-" . uniqid();
         return $this->pdo->lastInsertId();
     }
 
@@ -67,7 +67,10 @@ class MockPDOStatement {
     ];
 
     public function execute($params = []) { 
-        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'contact.php') !== false && count($params) >= 4) {
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        
+        // Mock Contact Submissions
+        if (strpos($uri, 'contact.php') !== false && count($params) >= 4) {
             if (!isset($_SESSION['mock_messages'])) {
                 $_SESSION['mock_messages'] = [];
             }
@@ -81,12 +84,64 @@ class MockPDOStatement {
                 'created_at' => date('Y-m-d H:i:s')
             ];
         }
+
+        // Mock Product Additions
+        if (strpos($uri, 'product-edit.php') !== false && count($params) === 8) {
+            if (!isset($_SESSION['mock_products'])) $_SESSION['mock_products'] = [];
+            $newId = count($_SESSION['mock_products']) + 4; // base data has 3
+            $_SESSION['mock_products'][] = [
+                'id' => $newId,
+                'name' => $params[0],
+                'origin' => $params[1],
+                'price' => $params[2],
+                'weight' => $params[3],
+                'description' => $params[4],
+                'image_url' => $params[5],
+                'stock_quantity' => $params[6],
+                'type' => 'coffee'
+            ];
+            $_SESSION['last_mock_insert_id'] = $newId;
+        }
+
+        // Mock Product Updates
+        if (strpos($uri, 'product-edit.php') !== false && count($params) === 9) {
+            if (isset($_SESSION['mock_products'])) {
+                foreach ($_SESSION['mock_products'] as &$p) {
+                    if ($p['id'] == $params[8]) {
+                        $p['name'] = $params[0];
+                        $p['origin'] = $params[1];
+                        $p['price'] = $params[2];
+                        $p['weight'] = $params[3];
+                        $p['description'] = $params[4];
+                        $p['image_url'] = $params[5];
+                        $p['stock_quantity'] = $params[6];
+                    }
+                }
+            }
+        }
+
+        // Mock Product Deletions
+        if (strpos($uri, 'products.php') !== false && count($params) === 1 && isset($_POST['delete_product_id'])) {
+            if (!isset($_SESSION['mock_deleted_products'])) $_SESSION['mock_deleted_products'] = [];
+            $_SESSION['mock_deleted_products'][] = $params[0];
+        }
+
         return true; 
     }
     
     public function fetch() { 
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+
+        // Handle fetching individual products for editing or viewing
+        if ((strpos($uri, 'product.php') !== false || strpos($uri, 'product-edit.php') !== false) && isset($_GET['id'])) {
+            $allProducts = $this->fetchAll();
+            foreach ($allProducts as $p) {
+                if ($p['id'] == $_GET['id']) return $p;
+            }
+        }
+
         // Simulated Object Returns based on request context
-        if (isset($_GET['token']) || isset($_GET['id']) && strpos($_SERVER['REQUEST_URI'], 'order') !== false) {
+        if (isset($_GET['token']) || isset($_GET['id']) && strpos($uri, 'order') !== false) {
             return [
                 'id' => $_GET['token'] ?? $_GET['id'] ?? 'ORD-2026-MOCK',
                 'customer_name' => 'John Doe',
@@ -160,8 +215,17 @@ class MockPDOStatement {
             ]];
         }
         
-        if (strpos($uri, 'products.php') !== false || strpos($uri, 'shop.php') !== false || strpos($uri, 'index.php') !== false || strpos($uri, 'cart.php') !== false || strpos($uri, 'checkout.php') !== false) {
-            return $this->data; 
+        if (strpos($uri, 'products.php') !== false || strpos($uri, 'shop.php') !== false || strpos($uri, 'index.php') !== false || strpos($uri, 'cart.php') !== false || strpos($uri, 'checkout.php') !== false || strpos($uri, 'product-edit.php') !== false || strpos($uri, 'product.php') !== false) {
+            $baseProducts = $this->data;
+            if (isset($_SESSION['mock_products']) && !empty($_SESSION['mock_products'])) {
+                $baseProducts = array_merge($baseProducts, $_SESSION['mock_products']);
+            }
+            if (isset($_SESSION['mock_deleted_products']) && !empty($_SESSION['mock_deleted_products'])) {
+                $baseProducts = array_filter($baseProducts, function($p) {
+                    return !in_array($p['id'], $_SESSION['mock_deleted_products']);
+                });
+            }
+            return array_values($baseProducts); 
         }
         
         // Return empty array for settings.php (logs, admins) and anything else to prevent undefined key errors
