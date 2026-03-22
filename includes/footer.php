@@ -50,13 +50,37 @@
     <script>
         // Mobile Drawer Toggle
         const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const closeMenuBtn = document.getElementById('closeMenuBtn');
         const mobileDrawer = document.getElementById('mobileDrawer');
-        if (mobileMenuBtn && mobileDrawer) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileDrawer.classList.toggle('translate-x-full');
-                document.body.classList.toggle('overflow-hidden');
-            });
+        const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
+        
+        function toggleMobileMenu() {
+            if (!mobileDrawer) return;
+            if (mobileDrawer.classList.contains('translate-x-full')) {
+                // Open
+                if (mobileMenuBackdrop) {
+                    mobileMenuBackdrop.classList.remove('hidden');
+                    void mobileMenuBackdrop.offsetWidth;
+                    mobileMenuBackdrop.classList.remove('opacity-0');
+                    mobileMenuBackdrop.classList.add('opacity-100');
+                }
+                mobileDrawer.classList.remove('translate-x-full');
+                document.body.classList.add('overflow-hidden');
+            } else {
+                // Close
+                if (mobileMenuBackdrop) {
+                    mobileMenuBackdrop.classList.remove('opacity-100');
+                    mobileMenuBackdrop.classList.add('opacity-0');
+                    setTimeout(() => mobileMenuBackdrop.classList.add('hidden'), 300);
+                }
+                mobileDrawer.classList.add('translate-x-full');
+                document.body.classList.remove('overflow-hidden');
+            }
         }
+
+        if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMobileMenu);
+        if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener('click', toggleMobileMenu);
 
         // Global Toast Notification System
         function showToast(message, cartLink = false) {

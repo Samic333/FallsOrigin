@@ -13,7 +13,7 @@ if ($token) {
 }
 ?>
 
-<div class="pt-32 pb-24 bg-[#050505] min-h-screen">
+<div class="pt-8 md:pt-12 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-4xl mx-auto px-6">
         <div class="page-header mb-16 text-center">
             <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('transactional_transparency'); ?></h2>

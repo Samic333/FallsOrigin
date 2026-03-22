@@ -83,23 +83,28 @@ require_once __DIR__ . '/db.php';
                 </div>
             </div>
         </div>
-
-        <!-- Mobile Drawer Overlay -->
-        <div id="mobileDrawer" class="fixed inset-0 bg-[#050505]/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 pb-8 px-8">
-            <nav class="flex flex-col space-y-8 items-center text-center">
-                <a href="<?php echo $base_path; ?>index.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('home'); ?></a>
-                <a href="<?php echo $base_path; ?>shop.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('collection'); ?></a>
-                <a href="<?php echo $base_path; ?>track-order.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('track_order'); ?></a>
-                <a href="<?php echo $base_path; ?>contact.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('contact_us'); ?></a>
-                
-                <div class="w-16 h-px bg-white/10 my-4"></div>
-                
-                <!-- Mobile Language Select -->
-                <div class="flex items-center gap-4 bg-white/5 rounded-full p-1 border border-white/5">
-                    <a href="<?php echo $en_url; ?>" class="text-[10px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'en' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">EN</a>
-                    <a href="<?php echo $fr_url; ?>" class="text-[10px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'fr' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">FR</a>
-                </div>
-            </nav>
-        </div>
     </header>
+
+    <!-- Mobile Drawer Overlay (Extracted from Header context for full viewport height) -->
+    <div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/80 z-[100] hidden md:hidden transition-opacity duration-300 opacity-0 pointer-events-auto"></div>
+    <div id="mobileDrawer" class="fixed top-0 right-0 h-full w-[80%] max-w-[320px] bg-[#0B0F14] border-l border-white/5 shadow-2xl z-[110] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 pb-8 px-8 pointer-events-auto">
+        <button id="closeMenuBtn" class="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+        </button>
+        <nav class="flex flex-col space-y-8 items-start text-left mt-4 w-full">
+            <a href="<?php echo $base_path; ?>index.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('home'); ?></a>
+            <a href="<?php echo $base_path; ?>shop.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('collection'); ?></a>
+            <a href="<?php echo $base_path; ?>track-order.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('track_order'); ?></a>
+            <a href="<?php echo $base_path; ?>contact.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('contact_us'); ?></a>
+            
+            <div class="w-full h-px bg-white/10 my-4"></div>
+            
+            <!-- Mobile Language Select -->
+            <div class="flex items-center gap-4 bg-white/5 rounded-full p-1 border border-white/5 self-start">
+                <a href="<?php echo $en_url; ?>" class="text-[10px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'en' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">EN</a>
+                <a href="<?php echo $fr_url; ?>" class="text-[10px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'fr' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">FR</a>
+            </div>
+        </nav>
+    </div>
+
     <main style="padding-top: 80px;">

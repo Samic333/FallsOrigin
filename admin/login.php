@@ -31,7 +31,7 @@ $pageTitle = 'Secure Authentication';
 require_once __DIR__ . '/../includes/header.php';
 ?>
 
-<div class="pt-32 pb-24 bg-[#050505] min-h-screen flex items-center justify-center">
+<div class="pt-8 md:pt-12 pb-24 bg-[#050505] min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] shadow-2xl">
         <div class="text-center mb-12">
             <h1 class="text-2xl font-black uppercase tracking-[0.3em] text-white">Origin <span class="text-amber-600">OS</span></h1>

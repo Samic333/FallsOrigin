@@ -44,7 +44,7 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 }
 ?>
 
-<div class="pt-32 pb-24 bg-[#050505] min-h-screen">
+<div class="pt-8 md:pt-12 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-5xl mx-auto px-6">
         <div class="page-header mb-16 border-b border-white/5 pb-10 flex justify-between items-end">
             <div>
