@@ -106,7 +106,48 @@ class MockPDOStatement {
     }
     
     public function fetchAll() { 
-        return $this->data; 
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        
+        if (strpos($uri, 'orders.php') !== false) {
+            return [[
+                'id' => 'ORD-2026-MOCK',
+                'customer_name' => 'John Doe',
+                'email' => 'test@example.com',
+                'total' => 43.00,
+                'status' => 'Preparing',
+                'created_at' => date('Y-m-d H:i:s')
+            ]];
+        }
+        
+        if (strpos($uri, 'messages.php') !== false) {
+            return [[
+                'id' => 1,
+                'name' => 'Jane Smith',
+                'email' => 'jane@example.com',
+                'subject' => 'Stock inquiry',
+                'message' => 'Is Guji available?',
+                'status' => 'Unread',
+                'created_at' => date('Y-m-d H:i:s')
+            ]];
+        }
+        
+        if (strpos($uri, 'reviews.php') !== false) {
+            return [[
+                'id' => 1,
+                'customer_name' => 'John Doe',
+                'rating' => 5,
+                'comment' => 'Incredible coffee, perfectly roasted.',
+                'status' => 'Pending',
+                'created_at' => date('Y-m-d H:i:s')
+            ]];
+        }
+        
+        if (strpos($uri, 'products.php') !== false || strpos($uri, 'shop.php') !== false || strpos($uri, 'index.php') !== false) {
+            return $this->data; 
+        }
+        
+        // Return empty array for settings.php (logs, admins) and anything else to prevent undefined key errors
+        return [];
     }
     
     public function fetchColumn() { return 0; }

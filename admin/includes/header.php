@@ -24,7 +24,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
-<body class="min-h-screen bg-[#050505] text-[#f5f5f4] flex overflow-hidden">
+<body class="h-screen w-screen bg-[#050505] text-[#f5f5f4] flex overflow-hidden">
     
     <!-- Sidebar -->
     <aside class="w-80 bg-[#0a0a0a] border-r border-white/5 flex flex-col h-screen">
