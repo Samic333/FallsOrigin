@@ -75,17 +75,17 @@ $featuredProduct = $products[0] ?? null;
     <div class="container">
         <div class="benefits-grid" style="gap: 2rem;">
             <div class="benefit-item">
-                <div style="margin-bottom: 1rem;"><img src="https://flagcdn.com/w40/et.png" width="30" alt="Ethiopia"></div>
+                <div style="margin-bottom: 1rem; display: flex; justify-content: center;"><img src="https://flagcdn.com/w40/et.png" width="30" alt="Ethiopia"></div>
                 <h4 class="benefit-title font-serif" style="text-transform: none; letter-spacing: normal;"><?php echo __('ethiopian_origin'); ?></h4>
                 <p class="benefit-text" style="opacity: 0.6;"><?php echo __('ethiopian_origin_desc'); ?></p>
             </div>
             <div class="benefit-item">
-                <div style="margin-bottom: 1rem;"><span style="font-size: 2rem;">☕</span></div>
+                <div style="margin-bottom: 1rem; display: flex; justify-content: center;"><span style="font-size: 2rem;">☕</span></div>
                 <h4 class="benefit-title font-serif" style="text-transform: none; letter-spacing: normal;"><?php echo __('freshly_roasted'); ?></h4>
                 <p class="benefit-text" style="opacity: 0.6;"><?php echo __('freshly_roasted_desc'); ?></p>
             </div>
             <div class="benefit-item">
-                <div style="margin-bottom: 1rem;"><img src="https://flagcdn.com/w40/ca.png" width="30" alt="Canada"></div>
+                <div style="margin-bottom: 1rem; display: flex; justify-content: center;"><img src="https://flagcdn.com/w40/ca.png" width="30" alt="Canada"></div>
                 <h4 class="benefit-title font-serif" style="text-transform: none; letter-spacing: normal;"><?php echo __('delivered_canada'); ?></h4>
                 <p class="benefit-text" style="opacity: 0.6;"><?php echo __('delivered_canada_desc'); ?></p>
             </div>

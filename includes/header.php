@@ -27,33 +27,33 @@ require_once __DIR__ . '/db.php';
 </head>
 <body class="min-h-screen flex flex-col bg-[#050505]">
     <header>
-        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px; width: 100%;">
+        <div class="container" style="display: flex; justify-content: space-between; align-items: center; height: 80px; width: 100%; gap: 2rem;">
             <!-- Logo Left -->
-            <div style="flex: 1; display: flex; justify-content: flex-start;">
-                <a href="index.php" style="text-decoration: none; display: flex; flex-direction: column; align-items: flex-start;">
+            <div style="flex: 0 0 auto; display: flex; justify-content: flex-start;">
+                <a href="index.php" style="text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; min-width: 180px;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <svg viewBox="0 0 100 100" fill="currentColor" style="width: 32px; height: 32px; color: white;">
                             <path d="M48 5h4v55c0 10-1.5 20-3 30h-1c-1.5-10-3-20-3-30V5z" />
                             <path d="M36 15h3.5v45c0 8-1.5 16-3 24h-1c-1.5-8-3-16-3-24V15z" opacity="0.8" />
                             <path d="M60.5 15h3.5v45c0 8-1.5 16-3 24h-1c-1.5-8-3-16-3-24V15z" opacity="0.8" />
                         </svg>
-                        <span style="font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; font-size: 1.1rem; color: white;">Falls Origin</span>
+                        <span style="font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; font-size: 1.1rem; color: white; white-space: nowrap;">Falls Origin</span>
                     </div>
                     <span style="font-weight: 400; letter-spacing: 0.4em; text-transform: uppercase; font-size: 0.6rem; color: rgba(255,255,255,0.6); margin-top: -2px; padding-left: 38px;">Coffee</span>
                 </a>
             </div>
 
             <!-- Menu Center -->
-            <div class="header-center" style="flex: 2; display: flex; justify-content: center;">
+            <div class="header-center" style="flex: 1; display: flex; justify-content: center; overflow: hidden;">
                 <?php require_once __DIR__ . '/nav.php'; ?>
             </div>
 
             <!-- Icons/Lang Right -->
-            <div class="header-right" style="flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;">
+            <div class="header-right" style="flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;">
                 <!-- Language Toggle -->
                 <div style="display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 99px; padding: 2px; border: 1px solid rgba(255,255,255,0.05);">
-                    <a href="?lang=en" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $_SESSION['lang'] === 'en' ? 'background: var(--accent-gold); color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">EN</a>
-                    <a href="?lang=fr" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $_SESSION['lang'] === 'fr' ? 'background: var(--accent-gold); color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">FR</a>
+                    <a href="?lang=en" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $lang === 'en' ? 'background: #D4A373; color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">EN</a>
+                    <a href="?lang=fr" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $lang === 'fr' ? 'background: #D4A373; color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">FR</a>
                 </div>
                 
                 <!-- Tools -->
