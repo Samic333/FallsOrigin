@@ -47,13 +47,15 @@ $products = $stmt->fetchAll();
                         <p class="text-white/40 text-[11px] uppercase font-medium tracking-wide leading-relaxed line-clamp-2">
                             <?php echo htmlspecialchars($product['description']); ?>
                         </p>
-                        <?php if ($product['stock_quantity'] > 0): ?>
-                            <button class="btn btn-gold w-full mt-6"><?php echo __('add_to_cart'); ?></button>
-                        <?php else: ?>
-                            <button class="btn w-full mt-6" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed;" disabled>Out of Stock</button>
-                        <?php endif; ?>
                     </div>
                 </a>
+                <div class="px-10 pb-12 pt-0 -mt-2 relative z-10 w-full">
+                    <?php if ($product['stock_quantity'] > 0): ?>
+                        <button onclick="addToCart(event, <?php echo $product['id']; ?>)" class="btn btn-gold w-full min-h-[48px] uppercase tracking-widest text-[10px]"><?php echo __('add_to_cart'); ?></button>
+                    <?php else: ?>
+                        <button class="btn w-full min-h-[48px]" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed;" disabled>Out of Stock</button>
+                    <?php endif; ?>
+                </div>
             </div>
             <?php endforeach; ?>
         </div>

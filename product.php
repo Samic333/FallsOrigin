@@ -57,7 +57,7 @@ $reviews = $reviewsStmt->fetchAll();
 
                 <div class="space-y-12">
                     <?php if ($product['stock_quantity'] > 0): ?>
-                        <button onclick="addToCart('<?php echo $product['id']; ?>')" class="btn btn-gold w-full py-8 uppercase text-[12px] tracking-[0.5em] shadow-2xl">
+                        <button onclick="addToCart(event, '<?php echo $product['id']; ?>')" class="btn btn-gold w-full py-8 uppercase text-[12px] tracking-[0.5em] shadow-2xl">
                             <?php echo __('add_to_cart'); ?>
                         </button>
                     <?php else: ?>
@@ -80,12 +80,5 @@ $reviews = $reviewsStmt->fetchAll();
         </div>
     </div>
 </div>
-
-<script>
-async function addToCart(id) {
-    const res = await fetch('cart.php?action=add&id=' + id);
-    if (res.ok) window.location.href = 'cart.php';
-}
-</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>

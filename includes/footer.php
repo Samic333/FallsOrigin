@@ -44,5 +44,72 @@
             </div>
         </div>
     </footer>
+    <!-- Global Toast Container -->
+    <div id="toastContainer" class="fixed top-24 right-6 z-[100] flex flex-col gap-3 pointer-events-none"></div>
+
+    <script>
+        // Mobile Drawer Toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileDrawer = document.getElementById('mobileDrawer');
+        if (mobileMenuBtn && mobileDrawer) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileDrawer.classList.toggle('translate-x-full');
+                document.body.classList.toggle('overflow-hidden');
+            });
+        }
+
+        // Global Toast Notification System
+        function showToast(message, cartLink = false) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'bg-[#1a1a1a] border border-amber-600/30 text-white px-6 py-4 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.8)] flex items-center justify-between gap-6 pointer-events-auto transform translate-y-[-10px] opacity-0 transition-all duration-300';
+            
+            let html = `<span class="text-[11px] font-bold tracking-wide uppercase text-white/90">${message}</span>`;
+            if (cartLink) {
+                html += `<a href="cart.php" class="text-amber-500 text-[10px] uppercase font-black tracking-widest hover:text-white transition-colors bg-white/5 px-3 py-1.5 rounded-full border border-amber-500/20">Review</a>`;
+            }
+            toast.innerHTML = html;
+            container.appendChild(toast);
+            
+            requestAnimationFrame(() => toast.classList.remove('translate-y-[-10px]', 'opacity-0'));
+
+            setTimeout(() => {
+                toast.classList.add('translate-y-[-10px]', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // Async Add to Cart
+        function addToCart(event, productId) {
+            event.preventDefault(); // Stop anchor from navigating
+            event.stopPropagation(); // Stop parent clicks
+            
+            const btn = event.currentTarget;
+            const originalText = btn.innerText;
+            btn.innerText = 'WAIT...';
+            btn.style.opacity = '0.5';
+
+            fetch(`cart.php?action=add&id=${productId}`, {
+                method: 'GET',
+                headers: { 'X-Requested-With': 'XMLHttpRequest' }
+            })
+            .then(res => {
+                btn.innerText = originalText;
+                btn.style.opacity = '1';
+                if(res.ok) {
+                    showToast('Coffee Secured', true);
+                    let cartBadge = document.querySelector('a[href*="cart.php"] span');
+                    if(cartBadge) {
+                        cartBadge.textContent = parseInt(cartBadge.textContent) + 1;
+                    } else {
+                        const cartIcon = document.querySelector('a[href*="cart.php"]');
+                        if (cartIcon) {
+                            cartIcon.innerHTML += '<span class="absolute -top-2 -right-2 bg-amber-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full">1</span>';
+                        }
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
