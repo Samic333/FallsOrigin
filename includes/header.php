@@ -27,10 +27,11 @@ require_once __DIR__ . '/db.php';
 </head>
 <body class="min-h-screen flex flex-col bg-[#050505]">
     <header>
+        <?php $base_path = (strpos($_SERVER['SCRIPT_NAME'], '/admin/') !== false) ? '../' : ''; ?>
         <div class="container mx-auto px-6 md:px-12 flex justify-between items-center h-20 w-full gap-8">
             <!-- Logo Left -->
             <div class="flex-none flex justify-start z-50">
-                <a href="index.php" style="text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; min-width: 180px;">
+                <a href="<?php echo $base_path; ?>index.php" style="text-decoration: none; display: flex; flex-direction: column; align-items: flex-start; min-width: 180px;">
                     <div style="display: flex; align-items: center; gap: 0.5rem;">
                         <svg viewBox="0 0 100 100" fill="currentColor" style="width: 32px; height: 32px; color: white;">
                             <path d="M48 5h4v55c0 10-1.5 20-3 30h-1c-1.5-10-3-20-3-30V5z" />
@@ -62,14 +63,14 @@ require_once __DIR__ . '/db.php';
                 
                 <!-- Tools -->
                 <div class="flex items-center gap-4">
-                    <a href="cart.php" class="text-white/40 hover:text-[#D4A373] transition-colors relative">
+                    <a href="<?php echo $base_path; ?>cart.php" class="text-white/40 hover:text-[#D4A373] transition-colors relative">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
                         <?php if (isset($cartCount) && $cartCount > 0): ?>
                             <span class="absolute -top-2 -right-2 bg-amber-600 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full"><?php echo $cartCount; ?></span>
                         <?php endif; ?>
                     </a>
                     
-                    <a href="admin/login.php" class="hidden md:block text-white/40 hover:text-[#D4A373] transition-colors">
+                    <a href="<?php echo $base_path; ?>admin/login.php" class="hidden md:block text-white/40 hover:text-[#D4A373] transition-colors">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                     </a>
 
@@ -86,10 +87,10 @@ require_once __DIR__ . '/db.php';
         <!-- Mobile Drawer Overlay -->
         <div id="mobileDrawer" class="fixed inset-0 bg-[#050505]/95 backdrop-blur-xl z-40 transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 pb-8 px-8">
             <nav class="flex flex-col space-y-8 items-center text-center">
-                <a href="index.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('home'); ?></a>
-                <a href="shop.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('collection'); ?></a>
-                <a href="track-order.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('track_order'); ?></a>
-                <a href="contact.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('contact_us'); ?></a>
+                <a href="<?php echo $base_path; ?>index.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('home'); ?></a>
+                <a href="<?php echo $base_path; ?>shop.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('collection'); ?></a>
+                <a href="<?php echo $base_path; ?>track-order.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('track_order'); ?></a>
+                <a href="<?php echo $base_path; ?>contact.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('contact_us'); ?></a>
                 
                 <div class="w-16 h-px bg-white/10 my-4"></div>
                 
