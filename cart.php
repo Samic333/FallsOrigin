@@ -1,5 +1,7 @@
 <?php
 $pageTitle = 'Your Selection';
+require_once __DIR__ . '/includes/functions.php';
+
 // Cart Logic
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
