@@ -15,10 +15,10 @@ if ($token) {
 
 <div class="pt-32 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-4xl mx-auto px-6">
-        <header class="mb-16 text-center">
+        <div class="page-header mb-16 text-center">
             <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('transactional_transparency'); ?></h2>
             <h1 class="text-5xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('order_verification'); ?></h1>
-        </header>
+        </div>
 
         <div class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] shadow-2xl">
             <?php if (!$order): ?>

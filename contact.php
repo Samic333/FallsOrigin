@@ -24,10 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <div class="pt-32 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-4xl mx-auto px-6">
-        <header class="mb-16 text-center">
+        <div class="page-header mb-16 text-center">
             <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('direct_frequency'); ?></h2>
             <h1 class="text-5xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('secure_communication'); ?></h1>
-        </header>
+        </div>
 
         <div class="bg-[#0a0a0a] border border-white/5 p-16 rounded-[4rem] shadow-2xl">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mb-16">
@@ -52,21 +52,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
-                        <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('identity'); ?></label>
-                        <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/70 block mb-3 ml-2"><?php echo __('identity'); ?></label>
+                        <input type="text" name="name" required placeholder="Enter your full name" class="w-full bg-[#111111] border-2 border-white/10 p-5 rounded-2xl text-white text-sm placeholder-white/40 focus:border-amber-600 transition-all outline-none">
                     </div>
                     <div>
-                        <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('electronic_mail'); ?></label>
-                        <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/70 block mb-3 ml-2"><?php echo __('electronic_mail'); ?></label>
+                        <input type="email" name="email" required placeholder="your.email@example.com" class="w-full bg-[#111111] border-2 border-white/10 p-5 rounded-2xl text-white text-sm placeholder-white/40 focus:border-amber-600 transition-all outline-none">
                     </div>
                 </div>
                 <div>
-                    <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('topic'); ?></label>
-                    <input type="text" name="subject" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none">
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/70 block mb-3 ml-2"><?php echo __('topic'); ?></label>
+                    <input type="text" name="subject" required placeholder="What is this regarding?" class="w-full bg-[#111111] border-2 border-white/10 p-5 rounded-2xl text-white text-sm placeholder-white/40 focus:border-amber-600 transition-all outline-none">
                 </div>
                 <div>
-                    <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('detailed_inquiry'); ?></label>
-                    <textarea name="message" rows="6" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none no-scrollbar"></textarea>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/70 block mb-3 ml-2"><?php echo __('detailed_inquiry'); ?></label>
+                    <textarea name="message" rows="6" required placeholder="Enter your message details here..." class="w-full bg-[#111111] border-2 border-white/10 p-5 rounded-2xl text-white text-sm placeholder-white/40 focus:border-amber-600 transition-all outline-none no-scrollbar"></textarea>
                 </div>
                 <button type="submit" class="w-full py-8 bg-white text-black font-black uppercase text-[11px] tracking-[0.5em] rounded-full hover:bg-amber-600 hover:text-white transition-all shadow-2xl">
                     <?php echo __('dispatch'); ?>

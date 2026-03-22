@@ -44,13 +44,13 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
 
 <div class="pt-32 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-5xl mx-auto px-6">
-        <header class="mb-16 border-b border-white/5 pb-10 flex justify-between items-end">
+        <div class="page-header mb-16 border-b border-white/5 pb-10 flex justify-between items-end">
             <div>
                 <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-amber-600 mb-2 italic"><?php echo __('transactional_transparency'); ?></h2>
                 <h1 class="text-4xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('cart'); ?></h1>
             </div>
             <a href="shop.php" class="text-[10px] font-black uppercase tracking-widest text-amber-600 hover:text-white transition-colors text-decoration-none"><?php echo __('view_collection'); ?></a>
-        </header>
+        </div>
 
         <?php if (empty($cartItems)): ?>
             <div class="py-32 text-center bg-[#0a0a0a] border border-white/5 rounded-[3rem] shadow-xl">
