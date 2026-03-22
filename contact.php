@@ -30,6 +30,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </header>
 
         <div class="bg-[#0a0a0a] border border-white/5 p-16 rounded-[4rem]">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-16 mb-16">
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600">Location</h3>
+                    <p class="text-xl text-white font-serif italic">Niagara Falls, Ontario</p>
+                </div>
+                <div class="space-y-4">
+                    <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600">Communication</h3>
+                    <p class="text-xl text-white font-serif italic">+1 289-668-7975</p>
+                </div>
+            </div>
+
             <?php if (isset($msg)): ?>
                 <div class="mb-12 p-6 bg-amber-600/10 border border-amber-600/20 text-amber-600 text-[10px] font-black uppercase tracking-widest rounded-3xl text-center italic">
                     <?php echo $msg; ?>
@@ -42,20 +53,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
                         <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Identity</label>
-                        <input type="text" name="name" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase">
+                        <input type="text" name="name" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none">
                     </div>
                     <div>
                         <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Electronic Mail</label>
-                        <input type="email" name="email" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase">
+                        <input type="email" name="email" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none">
                     </div>
                 </div>
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Topic of Provenance</label>
-                    <input type="text" name="subject" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase">
+                    <input type="text" name="subject" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none">
                 </div>
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Detailed Inquiry</label>
-                    <textarea name="message" rows="6" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase no-scrollbar"></textarea>
+                    <textarea name="message" rows="6" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none no-scrollbar"></textarea>
                 </div>
                 <button type="submit" class="w-full py-8 bg-white text-black font-black uppercase text-[10px] tracking-[0.5em] rounded-full hover:bg-amber-600 hover:text-white transition-all shadow-2xl">
                     Dispatch Transmission

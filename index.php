@@ -21,7 +21,7 @@ $featuredProduct = $products[0] ?? null;
 
 <!-- Hero Section -->
 <section class="hero-section">
-    <div class="hero-bg-image" style="background-image: url('assets/img/hero-coffee.png');"></div>
+    <div class="hero-bg-image"></div>
     <div class="hero-overlay"></div>
     
     <div class="container">
@@ -34,9 +34,9 @@ $featuredProduct = $products[0] ?? null;
                 Rich, bold, and smooth — delivered fresh <br>
                 from origin to your door.
             </p>
-            <div style="display: flex; gap: 1.5rem;">
+            <div class="hero-actions" style="display: flex; gap: 1.5rem;">
                 <a href="shop.php" class="btn btn-gold">Shop Now</a>
-                <a href="shop.php" class="btn btn-outline" style="border-radius: 4px;">View Collection</a>
+                <a href="shop.php" class="btn btn-outline">View Collection</a>
             </div>
         </div>
     </div>
@@ -47,13 +47,23 @@ $featuredProduct = $products[0] ?? null;
     <div class="container">
         <h2 class="section-title font-serif" style="text-transform: none; letter-spacing: -0.02em;">Our Collection</h2>
         <div class="collection-grid">
-            <?php foreach ($products as $product): ?>
-            <div class="product-card" style="padding: 1.5rem;">
+            <?php 
+            $imageMap = [
+                'Yirgacheffe' => 'yirgacheffe.png',
+                'Sidamo' => 'sidamo.png',
+                'Guji' => 'guji.png'
+            ];
+            foreach ($products as $product): 
+                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
+            ?>
+            <div class="product-card">
                 <a href="product.php?id=<?php echo $product['id']; ?>" style="text-decoration: none; color: inherit;">
-                    <img src="assets/img/product_front.png" alt="<?php echo e($product['name']); ?>" style="max-width: 90%; margin-bottom: 1.5rem;">
-                    <h3 class="product-name font-serif" style="margin-bottom: 0.25rem;"><?php echo e($product['name']); ?></h3>
-                    <p class="product-price">$<?php echo $product['price']; ?></p>
-                    <button class="btn btn-gold" style="width: 100%; border-radius: 4px;">Add to Cart</button>
+                    <div class="product-image-container" style="margin-bottom: 2rem; overflow: hidden; border-radius: 4px;">
+                        <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; height: auto; display: block; transition: var(--transition);">
+                    </div>
+                    <h3 class="product-name font-serif" style="margin-bottom: 0.25rem;"><?php echo htmlspecialchars($product['name']); ?></h3>
+                    <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>
+                    <button class="btn btn-gold" style="width: 100%;">Add to Cart</button>
                 </a>
             </div>
             <?php endforeach; ?>

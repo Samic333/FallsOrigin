@@ -11,32 +11,32 @@
                         </svg>
                         <span class="text-3xl font-black tracking-[0.2em] uppercase text-white">Falls Origin</span>
                     </a>
-                    <p class="text-white/30 text-sm max-w-sm uppercase font-medium tracking-tight leading-relaxed">
-                        Small batch heirloom coffee, roasted with technical precision in the heart of Toronto for the discerning global palate.
+                    <p class="text-white/60 text-sm max-w-sm uppercase font-medium tracking-tight leading-relaxed">
+                        Small batch heirloom coffee, roasted with technical precision in Niagara Falls for the discerning global palate.
                     </p>
                 </div>
                 <div>
                     <h4 class="text-[10px] font-black uppercase tracking-[0.5em] text-white mb-8">Navigation</h4>
                     <ul class="space-y-4">
-                        <li><a href="shop.php" class="text-white/20 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Collection</a></li>
-                        <li><a href="track-order.php" class="text-white/20 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Order Status</a></li>
-                        <li><a href="contact.php" class="text-white/20 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Connect</a></li>
+                        <li><a href="shop.php" class="text-white/60 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Collection</a></li>
+                        <li><a href="track-order.php" class="text-white/60 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Order Status</a></li>
+                        <li><a href="contact.php" class="text-white/60 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Contact Us</a></li>
                     </ul>
                 </div>
                 <div>
                     <h4 class="text-[10px] font-black uppercase tracking-[0.5em] text-white mb-8">Registry</h4>
                     <ul class="space-y-4">
-                        <li><a href="policies.php" class="text-white/20 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Provenance</a></li>
-                        <li><a href="admin/login.php" class="text-white/20 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Secure Terminal</a></li>
+                        <li><a href="policies.php" class="text-white/60 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Provenance</a></li>
+                        <li><a href="admin/login.php" class="text-white/60 hover:text-amber-600 text-[11px] font-black uppercase tracking-widest transition-colors">Secure Terminal</a></li>
                     </ul>
                 </div>
             </div>
             <div class="pt-12 border-t border-white/[0.02] flex flex-col md:flex-row justify-between items-center gap-8">
-                <p class="text-[9px] font-black text-white/10 uppercase tracking-[0.5em]">
+                <p class="text-[9px] font-black text-white/40 uppercase tracking-[0.5em]">
                     &copy; <?php echo date('Y'); ?> Falls Origin Coffee. All rights reserved.
                 </p>
-                <div class="flex space-x-12 grayscale opacity-20">
-                    <span class="text-[9px] font-black text-white uppercase tracking-[0.5em]">Toronto, CA</span>
+                <div class="flex space-x-12 opacity-60">
+                    <span class="text-[9px] font-black text-white uppercase tracking-[0.5em]">Niagara Falls, CA</span>
                     <span class="text-[9px] font-black text-white uppercase tracking-[0.5em]">2,100M ASL</span>
                 </div>
             </div>
