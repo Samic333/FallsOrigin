@@ -32,6 +32,8 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
     $products = $stmt->fetchAll();
 
     foreach ($products as $p) {
+        if (!isset($_SESSION['cart'][$p['id']])) continue;
+        
         $qty = $_SESSION['cart'][$p['id']];
         $subtotal = $p['price'] * $qty;
         $total += $subtotal;

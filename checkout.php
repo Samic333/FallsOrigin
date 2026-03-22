@@ -17,6 +17,8 @@ $stmt->execute($ids);
 $products = $stmt->fetchAll();
 
 foreach ($products as $p) {
+    if (!isset($_SESSION['cart'][$p['id']])) continue;
+    
     $qty = $_SESSION['cart'][$p['id']];
     $subtotal += $p['price'] * $qty;
     $cartItems[] = ['product' => $p, 'quantity' => $qty];
