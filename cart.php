@@ -1,7 +1,5 @@
 <?php
 $pageTitle = 'Your Selection';
-require_once __DIR__ . '/includes/header.php';
-
 // Cart Logic
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
@@ -19,6 +17,8 @@ if (isset($_GET['action'])) {
     header('Location: cart.php');
     exit;
 }
+
+require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
 $cartItems = [];

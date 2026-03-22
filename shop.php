@@ -18,10 +18,10 @@ $products = $stmt->fetchAll();
 
 <div class="pt-32 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-7xl mx-auto px-6">
-        <header class="mb-20 text-center">
+        <div class="page-header mb-20 text-center">
             <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('provenance'); ?></h2>
             <h1 class="text-6xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('micro_lot_selection'); ?></h1>
-        </header>
+        </div>
 
         <!-- Product Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
