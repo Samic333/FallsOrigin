@@ -67,6 +67,20 @@ class MockPDOStatement {
     ];
 
     public function execute($params = []) { 
+        if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'contact.php') !== false && count($params) >= 4) {
+            if (!isset($_SESSION['mock_messages'])) {
+                $_SESSION['mock_messages'] = [];
+            }
+            $_SESSION['mock_messages'][] = [
+                'id' => count($_SESSION['mock_messages']) + 2,
+                'name' => $params[0],
+                'email' => $params[1],
+                'subject' => $params[2],
+                'message' => $params[3],
+                'status' => 'Unread',
+                'created_at' => date('Y-m-d H:i:s')
+            ];
+        }
         return true; 
     }
     
@@ -120,7 +134,7 @@ class MockPDOStatement {
         }
         
         if (strpos($uri, 'messages.php') !== false) {
-            return [[
+            $baseMessages = [[
                 'id' => 1,
                 'name' => 'Jane Smith',
                 'email' => 'jane@example.com',
@@ -129,6 +143,10 @@ class MockPDOStatement {
                 'status' => 'Unread',
                 'created_at' => date('Y-m-d H:i:s')
             ]];
+            if (isset($_SESSION['mock_messages']) && !empty($_SESSION['mock_messages'])) {
+                return array_merge(array_reverse($_SESSION['mock_messages']), $baseMessages);
+            }
+            return $baseMessages;
         }
         
         if (strpos($uri, 'reviews.php') !== false) {
