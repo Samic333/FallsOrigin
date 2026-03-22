@@ -142,7 +142,7 @@ class MockPDOStatement {
             ]];
         }
         
-        if (strpos($uri, 'products.php') !== false || strpos($uri, 'shop.php') !== false || strpos($uri, 'index.php') !== false) {
+        if (strpos($uri, 'products.php') !== false || strpos($uri, 'shop.php') !== false || strpos($uri, 'index.php') !== false || strpos($uri, 'cart.php') !== false || strpos($uri, 'checkout.php') !== false) {
             return $this->data; 
         }
         
