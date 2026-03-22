@@ -5,10 +5,10 @@ if (isset($_SESSION['cart'])) {
 }
 ?>
 <nav class="hidden md:flex space-x-10">
-    <a href="index.php" class="text-white/60 hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase"><?php echo __('home'); ?></a>
-    <a href="shop.php" class="text-white/60 hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase"><?php echo __('shop'); ?></a>
-    <a href="track-order.php" class="text-white/60 hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase"><?php echo __('track'); ?></a>
-    <a href="contact.php" class="text-white/60 hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase"><?php echo __('contact'); ?></a>
+    <a href="index.php" class="text-white hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase">Home</a>
+    <a href="#collection" class="text-white hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase">Collection</a>
+    <a href="track-order.php" class="text-white hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase">Track</a>
+    <a href="contact.php" class="text-white hover:text-white text-[11px] font-bold tracking-[0.4em] transition-all uppercase">Connect</a>
 </nav>
 
 <div class="flex items-center space-x-2 sm:space-x-6">
