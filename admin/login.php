@@ -11,14 +11,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     $db = DB::getInstance();
-    $stmt = $db->prepare("SELECT * FROM admin_users WHERE username = ?");
+    $stmt = $db->prepare("SELECT * FROM admins WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_user'] = $user['username'];
-        $db->prepare("UPDATE admin_users SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
+        $db->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
         log_admin_action('Login', 'Admin user ' . $user['username'] . ' successfully authenticated.');
         header('Location: dashboard.php');
         exit;
@@ -26,18 +26,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Invalid credentials.";
     }
 }
+
+$pageTitle = 'Secure Authentication';
+require_once __DIR__ . '/../includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Origin OS | Secure Authentication</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
-    <style>body { font-family: 'Inter', sans-serif; background-color: #050505; color: #f5f5f4; }</style>
-</head>
-<body class="min-h-screen flex items-center justify-center p-6">
+
+<div class="pt-32 pb-24 bg-[#050505] min-h-screen flex items-center justify-center">
     <div class="w-full max-w-md bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] shadow-2xl">
         <div class="text-center mb-12">
             <h1 class="text-2xl font-black uppercase tracking-[0.3em] text-white">Origin <span class="text-amber-600">OS</span></h1>
@@ -51,14 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             <div>
                 <label class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 block mb-3 ml-2">Terminal Identity</label>
-                <input type="text" name="username" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs font-bold focus:outline-none focus:border-amber-600 transition-all">
+                <input type="text" name="username" required placeholder="admin@fallscoffee.ca" class="w-full bg-[#111111] border-2 border-white/10 p-5 rounded-2xl text-white text-xs font-bold focus:border-amber-600 transition-all outline-none placeholder-white/40">
             </div>
             <div>
                 <label class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 block mb-3 ml-2">Security Key</label>
-                <input type="password" name="password" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs font-bold focus:outline-none focus:border-amber-600 transition-all">
+                <input type="password" name="password" required placeholder="••••••••" class="w-full bg-[#111111] border-2 border-white/10 p-5 rounded-2xl text-white text-xs font-bold focus:border-amber-600 transition-all outline-none placeholder-white/40">
             </div>
             <button type="submit" class="w-full py-6 bg-white text-black font-black uppercase text-[10px] tracking-[0.4em] hover:bg-amber-600 hover:text-white transition-all rounded-3xl shadow-xl">Initialize Session</button>
         </form>
     </div>
-</body>
-</html>
+</div>
+
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

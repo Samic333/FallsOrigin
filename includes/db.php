@@ -71,9 +71,7 @@ class MockPDOStatement {
     }
     
     public function fetch() { 
-        // Simulated Order fetch based on query params (super hacky but effective for Mock UI QA)
-        $backtrace = debug_backtrace();
-        $caller = $backtrace[1] ?? [];
+        // Simulated Object Returns based on request context
         if (isset($_GET['token']) || isset($_GET['id']) && strpos($_SERVER['REQUEST_URI'], 'order') !== false) {
             return [
                 'id' => $_GET['token'] ?? $_GET['id'] ?? 'ORD-2026-MOCK',
@@ -92,6 +90,18 @@ class MockPDOStatement {
                 'items' => json_encode([['product' => $this->data[0], 'quantity' => 1]])
             ];
         }
+
+        // Catch admin authentication queries
+        if (strpos($_SERVER['REQUEST_URI'], 'login') !== false || isset($_POST['username'])) {
+            return [
+                'id' => 1,
+                'username' => 'admin@fallscoffee.ca',
+                'password_hash' => password_hash('FallsCoffee#2026', PASSWORD_DEFAULT),
+                'email' => 'admin@fallscoffee.ca',
+                'last_login' => null
+            ];
+        }
+
         return $this->data[0]; 
     }
     

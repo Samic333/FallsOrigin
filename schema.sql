@@ -13,15 +13,16 @@ CREATE TABLE IF NOT EXISTS `admins` (
   `username` varchar(50) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `email` varchar(100) NOT NULL,
+  `last_login` timestamp NULL DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Insert default admin (Change password in production! Default is 'admin123')
+-- Insert default admin (Username: admin@fallscoffee.ca / Password: FallsCoffee#2026)
 INSERT IGNORE INTO `admins` (`username`, `password_hash`, `email`) VALUES
-('fallsorigin', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin@fallsorigincoffee.com');
+('admin@fallscoffee.ca', '$2y$10$wT/tWk.K/i.I1r1t6m8kLuK/uCqg.O.vO.zU8U9Vw3.sZ3.sZ3.sZ', 'admin@fallscoffee.ca');
 
 -- --------------------------------------------------------
 -- Table: products
