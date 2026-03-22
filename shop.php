@@ -16,44 +16,41 @@ $stmt->execute($params);
 $products = $stmt->fetchAll();
 ?>
 
-<div class="pt-32 pb-24 bg-[#050505]">
+<div class="pt-32 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-7xl mx-auto px-6">
         <header class="mb-20 text-center">
-            <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic">Provenance Registry</h2>
-            <h1 class="text-6xl font-serif font-bold text-white uppercase tracking-tighter">Micro-Lot Selection</h1>
+            <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('provenance'); ?></h2>
+            <h1 class="text-6xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('micro_lot_selection'); ?></h1>
         </header>
-
-        <!-- Filters -->
-        <div class="flex items-center justify-center space-x-8 mb-20 overflow-x-auto no-scrollbar pb-4">
-            <?php foreach (['all' => 'All Frequencies', 'Single Origin' => 'Single Origin', 'Reserve' => 'Reserve Portfolio'] as $val => $label): ?>
-                <a href="?category=<?php echo $val; ?>" class="px-6 py-2 rounded-full border <?php echo $category === $val ? 'border-amber-600 text-amber-600' : 'border-white/5 text-white/20 hover:text-white/40'; ?> text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap">
-                    <?php echo $label; ?>
-                </a>
-            <?php endforeach; ?>
-        </div>
 
         <!-- Product Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            <?php foreach ($products as $product): ?>
-            <a href="product.php?id=<?php echo $product['id']; ?>" class="group">
-                <div class="relative bg-[#0a0a0a] border border-white/5 rounded-[3rem] p-10 overflow-hidden transition-all duration-700 hover:border-amber-600/30">
-                    <div class="absolute top-8 right-8 text-[9px] font-black uppercase tracking-widest text-white/10 group-hover:text-amber-600 transition-colors">
-                        <?php echo e($product['origin']); ?>
-                    </div>
-                    <div class="relative z-10 aspect-square mb-10 flex items-center justify-center">
-                        <img src="<?php echo e($product['image_url']); ?>" class="max-w-full max-h-full object-contain transition-transform duration-700 group-hover:scale-110">
+            <?php 
+            $imageMap = [
+                'Yirgacheffe' => 'yirgacheffe.png',
+                'Sidamo' => 'sidamo.png',
+                'Guji' => 'guji.png'
+            ];
+            foreach ($products as $product): 
+                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
+            ?>
+            <div class="product-card">
+                <a href="product.php?id=<?php echo $product['id']; ?>" class="block px-10 py-12 text-decoration-none">
+                    <div class="product-image-container mb-8 overflow-hidden rounded-lg bg-black/20 border border-white/5">
+                        <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-full h-auto transform transition-transform duration-700 hover:scale-110" style="image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <div class="space-y-4">
                         <div class="flex justify-between items-start">
-                            <h3 class="text-xl font-serif font-bold text-white group-hover:text-amber-600 transition-colors uppercase tracking-tight"><?php echo e($product['name']); ?></h3>
-                            <span class="text-white/20 text-[10px] font-black tracking-widest mt-1 italic">$<?php echo $product['price']; ?></span>
+                            <h3 class="text-2xl font-serif font-bold text-white transition-colors uppercase tracking-tight"><?php echo htmlspecialchars($product['name']); ?></h3>
+                            <span class="text-amber-600 text-sm font-bold tracking-widest mt-1">$<?php echo number_format($product['price'], 2); ?></span>
                         </div>
-                        <p class="text-white/30 text-[10px] uppercase font-medium tracking-tight leading-relaxed line-clamp-2">
-                            <?php echo e($product['description']); ?>
+                        <p class="text-white/40 text-[11px] uppercase font-medium tracking-wide leading-relaxed line-clamp-2">
+                            <?php echo htmlspecialchars($product['description']); ?>
                         </p>
+                        <button class="btn btn-gold w-full mt-6"><?php echo __('add_to_cart'); ?></button>
                     </div>
-                </div>
-            </a>
+                </a>
+            </div>
             <?php endforeach; ?>
         </div>
     </div>

@@ -27,53 +27,58 @@ $shippingCost = 15.00;
 $total = $subtotal + $shippingCost;
 ?>
 
-<div class="pt-32 pb-24">
+<div class="pt-32 pb-24 bg-[#050505] min-h-screen">
     <div class="max-w-7xl mx-auto px-6">
+        <header class="mb-16 text-center">
+            <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('transactional_transparency'); ?></h2>
+            <h1 class="text-5xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('checkout'); ?></h1>
+        </header>
+
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-16">
             <!-- Form Steps -->
             <div class="lg:col-span-2 space-y-12">
-                <div id="step-1" class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] transition-all duration-700">
-                    <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white mb-10">I. Logistics Identity</h3>
+                <div id="step-1" class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] transition-all duration-700 shadow-2xl">
+                    <h3 class="text-[11px] font-black uppercase tracking-[0.5em] text-white mb-10">I. <?php echo __('logistics_intel'); ?></h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div><label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">Email</label><input type="email" id="email" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs"></div>
-                        <div><label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">Full Identity</label><input type="text" id="name" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs"></div>
-                        <div class="md:col-span-2"><label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">Secure Address</label><input type="text" id="address" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs"></div>
-                        <div><label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">City</label><input type="text" id="city" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs"></div>
-                        <div><label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3">Postal/Zip</label><input type="text" id="postalCode" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs"></div>
+                        <div><label class="text-[10px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('electronic_mail'); ?></label><input type="email" id="email" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs focus:border-amber-600 outline-none transition-all"></div>
+                        <div><label class="text-[10px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('identity'); ?></label><input type="text" id="name" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs focus:border-amber-600 outline-none transition-all"></div>
+                        <div class="md:col-span-2"><label class="text-[10px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Secure Address</label><input type="text" id="address" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs focus:border-amber-600 outline-none transition-all"></div>
+                        <div><label class="text-[10px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">City</label><input type="text" id="city" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs focus:border-amber-600 outline-none transition-all"></div>
+                        <div><label class="text-[10px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2">Postal/Zip</label><input type="text" id="postalCode" required class="w-full bg-white/[0.02] border border-white/5 p-5 rounded-2xl text-white text-xs focus:border-amber-600 outline-none transition-all"></div>
                     </div>
-                    <button onclick="calculateDelivery()" class="mt-12 w-full py-6 bg-white text-black font-black uppercase text-[10px] tracking-[0.4em] rounded-full hover:bg-amber-600 hover:text-white transition-all">Authenticate Logistics</button>
+                    <button onclick="calculateDelivery()" class="btn btn-gold mt-12 w-full py-6 uppercase text-[11px] tracking-[0.4em] shadow-xl">Authenticate Logistics</button>
                 </div>
 
-                <div id="step-2" class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] opacity-20 pointer-events-none transition-all duration-700">
-                    <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white mb-10">II. Fulfillment Strategy</h3>
-                    <div id="delivery-info" class="text-xs border border-white/5 p-8 rounded-[2.5rem] bg-white/[0.01] mb-8 uppercase tracking-widest text-white/40 leading-relaxed italic">Logistics pending authentication...</div>
-                    <button onclick="goToPaymentStep()" class="w-full py-6 bg-white text-black font-black uppercase text-[10px] tracking-[0.4em] rounded-full">Confirm Strategy</button>
+                <div id="step-2" class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] opacity-20 pointer-events-none transition-all duration-700 shadow-2xl">
+                    <h3 class="text-[11px] font-black uppercase tracking-[0.5em] text-white mb-10">II. Fulfillment Strategy</h3>
+                    <div id="delivery-info" class="text-[10px] border border-white/5 p-8 rounded-[2.5rem] bg-white/[0.01] mb-8 uppercase tracking-[0.2em] text-white/40 leading-relaxed italic font-bold">Logistics pending authentication...</div>
+                    <button onclick="goToPaymentStep()" class="btn btn-gold w-full py-6 uppercase text-[11px] tracking-[0.4em] shadow-xl">Confirm Strategy</button>
                 </div>
 
-                <div id="step-3" class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] opacity-20 pointer-events-none transition-all duration-700">
-                    <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white mb-10">III. Financial Settlement</h3>
+                <div id="step-3" class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] opacity-20 pointer-events-none transition-all duration-700 shadow-2xl">
+                    <h3 class="text-[11px] font-black uppercase tracking-[0.5em] text-white mb-10">III. Financial Settlement</h3>
                     <div id="payment-element" class="mb-10"></div>
-                    <button id="submit-payment" class="w-full py-6 bg-white text-black font-black uppercase text-[10px] tracking-[0.4em] rounded-full shadow-2xl">Complete Transaction</button>
+                    <button id="submit-payment" class="btn btn-gold w-full py-6 uppercase text-[11px] tracking-[0.4em] shadow-2xl">Complete Transaction</button>
                     <div id="payment-message" class="hidden mt-6 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl text-center"></div>
                 </div>
             </div>
 
             <!-- Summary -->
             <div class="space-y-12">
-                <div class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] sticky top-32">
-                    <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white mb-10 italic">Summary Ledger</h3>
+                <div class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] sticky top-32 shadow-2xl">
+                    <h3 class="text-[11px] font-black uppercase tracking-[0.5em] text-amber-600 mb-10 italic">Summary Ledger</h3>
                     <div class="space-y-6 mb-12">
                         <?php foreach ($cartItems as $item): ?>
-                        <div class="flex justify-between items-center text-[11px] font-black uppercase tracking-widest text-white/40">
-                            <span><?php echo e($item['product']['name']); ?> (<?php echo $item['quantity']; ?>)</span>
-                            <span class="text-white">$<?php echo number_format($item['product']['price'] * $item['quantity'], 2); ?></span>
+                        <div class="flex justify-between items-center text-[12px] font-black uppercase tracking-widest text-white/40">
+                            <span class="max-w-[70%]"><?php echo e($item['product']['name']); ?> (<?php echo $item['quantity']; ?>)</span>
+                            <span class="text-white italic">$<?php echo number_format($item['product']['price'] * $item['quantity'], 2); ?></span>
                         </div>
                         <?php endforeach; ?>
                     </div>
                     <div class="border-t border-white/5 pt-8 space-y-4">
                         <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-white/20"><span>Base Value</span><span>$<?php echo number_format($subtotal, 2); ?></span></div>
                         <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-white/20"><span>Logistics</span><span id="shipping-display">$<?php echo number_format($shippingCost, 2); ?></span></div>
-                        <div class="flex justify-between text-xl font-serif font-bold text-white pt-4 italic"><span>Consolidated</span><span id="total-display">$<?php echo number_format($total, 2); ?></span></div>
+                        <div class="flex justify-between text-2xl font-serif font-bold text-amber-500 pt-4 italic"><span>Consolidated</span><span id="total-display">$<?php echo number_format($total, 2); ?></span></div>
                     </div>
                 </div>
             </div>

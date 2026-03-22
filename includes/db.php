@@ -60,10 +60,23 @@ class DB {
  * Mock PDO Statement for Graceful Failures
  */
 class MockPDOStatement {
+    private $data = [
+        ['id' => 1, 'name' => 'Yirgacheffe', 'origin' => 'Ethiopia', 'price' => 28.00, 'weight' => '340g', 'description' => 'Bright floral notes with a distinct lemony acidity and silk-like body.', 'image_url' => 'assets/img/yirgacheffe.png', 'type' => 'coffee'],
+        ['id' => 2, 'name' => 'Sidamo', 'origin' => 'Ethiopia', 'price' => 26.00, 'weight' => '340g', 'description' => 'Deep berry-like flavors with a smooth chocolate finish and medium body.', 'image_url' => 'assets/img/sidamo.png', 'type' => 'coffee'],
+        ['id' => 3, 'name' => 'Guji', 'origin' => 'Ethiopia', 'price' => 32.00, 'weight' => '340g', 'description' => 'Complex jasmine aroma with notes of sweet peach and a clean honey finish.', 'image_url' => 'assets/img/guji.png', 'type' => 'coffee']
+    ];
+
     public function execute($params = []) { return true; }
-    public function fetch() { return false; }
-    public function fetchAll() { return []; }
+    
+    public function fetch() { 
+        return $this->data[0]; // Return first item for details
+    }
+    
+    public function fetchAll() { 
+        return $this->data; 
+    }
+    
     public function fetchColumn() { return 0; }
-    public function rowCount() { return 0; }
+    public function rowCount() { return count($this->data); }
 }
 ?>
