@@ -61,15 +61,38 @@ class DB {
  */
 class MockPDOStatement {
     private $data = [
-        ['id' => 1, 'name' => 'Yirgacheffe', 'origin' => 'Ethiopia', 'price' => 28.00, 'weight' => '340g', 'description' => 'Bright floral notes with a distinct lemony acidity and silk-like body.', 'image_url' => 'assets/img/yirgacheffe.png', 'type' => 'coffee'],
-        ['id' => 2, 'name' => 'Sidamo', 'origin' => 'Ethiopia', 'price' => 26.00, 'weight' => '340g', 'description' => 'Deep berry-like flavors with a smooth chocolate finish and medium body.', 'image_url' => 'assets/img/sidamo.png', 'type' => 'coffee'],
-        ['id' => 3, 'name' => 'Guji', 'origin' => 'Ethiopia', 'price' => 32.00, 'weight' => '340g', 'description' => 'Complex jasmine aroma with notes of sweet peach and a clean honey finish.', 'image_url' => 'assets/img/guji.png', 'type' => 'coffee']
+        ['id' => 1, 'name' => 'Yirgacheffe', 'origin' => 'Ethiopia', 'price' => 28.00, 'weight' => '340g', 'description' => 'Bright floral notes with a distinct lemony acidity and silk-like body.', 'image_url' => 'assets/img/yirgacheffe.png', 'type' => 'coffee', 'stock_quantity' => 10],
+        ['id' => 2, 'name' => 'Sidamo', 'origin' => 'Ethiopia', 'price' => 26.00, 'weight' => '340g', 'description' => 'Deep berry-like flavors with a smooth chocolate finish and medium body.', 'image_url' => 'assets/img/sidamo.png', 'type' => 'coffee', 'stock_quantity' => 10],
+        ['id' => 3, 'name' => 'Guji', 'origin' => 'Ethiopia', 'price' => 32.00, 'weight' => '340g', 'description' => 'Complex jasmine aroma with notes of sweet peach and a clean honey finish.', 'image_url' => 'assets/img/guji.png', 'type' => 'coffee', 'stock_quantity' => 10]
     ];
 
-    public function execute($params = []) { return true; }
+    public function execute($params = []) { 
+        return true; 
+    }
     
     public function fetch() { 
-        return $this->data[0]; // Return first item for details
+        // Simulated Order fetch based on query params (super hacky but effective for Mock UI QA)
+        $backtrace = debug_backtrace();
+        $caller = $backtrace[1] ?? [];
+        if (isset($_GET['token']) || isset($_GET['id']) && strpos($_SERVER['REQUEST_URI'], 'order') !== false) {
+            return [
+                'id' => $_GET['token'] ?? $_GET['id'] ?? 'ORD-2026-MOCK',
+                'customer_name' => 'John Doe',
+                'email' => 'test@example.com',
+                'address' => '123 Test St',
+                'city' => 'Toronto',
+                'province' => 'ON',
+                'postal_code' => 'M5V 2H1',
+                'total' => 43.00,
+                'status' => 'Preparing',
+                'tracking_number' => '',
+                'eta' => '',
+                'delivery_method' => 'STANDARD COURIER',
+                'delivery_signature' => '',
+                'items' => json_encode([['product' => $this->data[0], 'quantity' => 1]])
+            ];
+        }
+        return $this->data[0]; 
     }
     
     public function fetchAll() { 

@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Control Settings';
-require_once __DIR__ . '/../includes/admin_header.php';
+require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
 $logs = $db->query("SELECT * FROM admin_audit_logs ORDER BY created_at DESC LIMIT 50")->fetchAll();

@@ -20,4 +20,15 @@ function send_review_request($order) {
     
     return mail($order['email'], $subject, $body, "From: " . ADMIN_EMAIL);
 }
+
+function send_customer_email($to_email, $subject, $body) {
+    if (!defined('ADMIN_EMAIL')) {
+        define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
+    }
+    $headers = "From: " . ADMIN_EMAIL . "\r\n";
+    $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
+    $headers .= "X-Mailer: PHP/" . phpversion();
+    
+    return mail($to_email, $subject, $body, $headers);
+}
 ?>

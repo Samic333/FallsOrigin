@@ -56,10 +56,15 @@ $reviews = $reviewsStmt->fetchAll();
                 </div>
 
                 <div class="space-y-12">
-                    <button onclick="addToCart('<?php echo $product['id']; ?>')" class="btn btn-gold w-full py-8 uppercase text-[12px] tracking-[0.5em] shadow-2xl">
-                        <?php echo __('add_to_cart'); ?>
-                    </button>
-                    
+                    <?php if ($product['stock_quantity'] > 0): ?>
+                        <button onclick="addToCart('<?php echo $product['id']; ?>')" class="btn btn-gold w-full py-8 uppercase text-[12px] tracking-[0.5em] shadow-2xl">
+                            <?php echo __('add_to_cart'); ?>
+                        </button>
+                    <?php else: ?>
+                        <button disabled class="w-full py-8 uppercase text-[12px] tracking-[0.5em] shadow-2xl" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed;">
+                            Out of Stock
+                        </button>
+                    <?php endif; ?>
                     <div class="flex items-center justify-center space-x-12 pt-8 opacity-40 text-[10px] font-black uppercase tracking-widest text-white">
                         <div class="flex items-center space-x-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-600"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>

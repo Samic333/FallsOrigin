@@ -62,7 +62,11 @@ $featuredProduct = $products[0] ?? null;
                     </div>
                     <h3 class="product-name font-serif" style="margin-bottom: 0.25rem;"><?php echo htmlspecialchars($product['name']); ?></h3>
                     <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>
-                    <button class="btn btn-gold" style="width: 100%;"><?php echo __('add_to_cart'); ?></button>
+                    <?php if (isset($product['stock_quantity']) && $product['stock_quantity'] <= 0): ?>
+                        <button class="btn" style="width: 100%; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed;" disabled>Out of Stock</button>
+                    <?php else: ?>
+                        <button class="btn btn-gold" style="width: 100%;"><?php echo __('add_to_cart'); ?></button>
+                    <?php endif; ?>
                 </a>
             </div>
             <?php endforeach; ?>

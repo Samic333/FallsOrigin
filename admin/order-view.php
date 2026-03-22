@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Order Control';
-require_once __DIR__ . '/../includes/admin_header.php';
+require_once __DIR__ . '/includes/header.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) { header('Location: orders.php'); exit; }
@@ -13,16 +13,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         die('CSRF token validation failed.');
     }
     if (isset($_POST['status'])) {
-
         $status = $_POST['status'];
         $tracking = $_POST['tracking_number'];
         $eta = $_POST['eta'];
         $signature = $_POST['delivery_signature'];
 
+        $stmt = $db->prepare("SELECT status, email, customer_name FROM orders WHERE id = ?");
+        $stmt->execute([$id]);
+        $oldOrder = $stmt->fetch();
+
         $stmt = $db->prepare("UPDATE orders SET status = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
         $stmt->execute([$status, $tracking, $eta, $signature, $id]);
         log_admin_action('Update Order', "Order {$id} status set to {$status}.");
         $msg = "Order updated successfully.";
+        
+        if ($status === 'Shipped' && $oldOrder['status'] !== 'Shipped' && !empty($tracking)) {
+            require_once __DIR__ . '/../includes/mail.php';
+            $site_url = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+            $trackingLink = $site_url . "/track-order.php?token=" . urlencode($id);
+            $emailBody = "Hello {$oldOrder['customer_name']},\n\nYour order #{$id} has been shipped!\n\nTracking Number: {$tracking}\nEstimated Arrival: {$eta}\n\nYou can track your order live here:\n{$trackingLink}\n\nThank you for choosing Falls Origin Coffee.";
+            send_customer_email($oldOrder['email'], "Your Order #{$id} has Shipped", $emailBody);
+            $msg .= " Shipping confirmation email deployed.";
+        }
     }
 
     if (isset($_POST['trigger_review'])) {

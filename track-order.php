@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Order Verification';
+$pageTitle = 'Track Order';
 require_once __DIR__ . '/includes/header.php';
 
 $token = $_GET['token'] ?? null;
@@ -7,7 +7,7 @@ $order = null;
 
 if ($token) {
     $db = DB::getInstance();
-    $stmt = $db->prepare("SELECT * FROM orders WHERE tracking_token = ?");
+    $stmt = $db->prepare("SELECT * FROM orders WHERE id = ?");
     $stmt->execute([$token]);
     $order = $stmt->fetch();
 }

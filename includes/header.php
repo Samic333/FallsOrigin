@@ -50,10 +50,13 @@ require_once __DIR__ . '/db.php';
 
             <!-- Icons/Lang Right -->
             <div class="header-right" style="flex: 0 0 auto; display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem;">
-                <!-- Language Toggle -->
+                <?php
+                $en_query = $_GET; $en_query['lang'] = 'en'; $en_url = '?' . http_build_query($en_query);
+                $fr_query = $_GET; $fr_query['lang'] = 'fr'; $fr_url = '?' . http_build_query($fr_query);
+                ?>
                 <div style="display: flex; align-items: center; background: rgba(255,255,255,0.05); border-radius: 99px; padding: 2px; border: 1px solid rgba(255,255,255,0.05);">
-                    <a href="?lang=en" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $lang === 'en' ? 'background: #D4A373; color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">EN</a>
-                    <a href="?lang=fr" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $lang === 'fr' ? 'background: #D4A373; color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">FR</a>
+                    <a href="<?php echo $en_url; ?>" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $lang === 'en' ? 'background: #D4A373; color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">EN</a>
+                    <a href="<?php echo $fr_url; ?>" style="text-decoration: none; font-size: 9px; font-weight: 900; padding: 4px 8px; border-radius: 99px; transition: all 0.3s; <?php echo $lang === 'fr' ? 'background: #D4A373; color: white;' : 'color: rgba(255,255,255,0.3);'; ?>">FR</a>
                 </div>
                 
                 <!-- Tools -->

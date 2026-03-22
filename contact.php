@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Connect';
+$pageTitle = 'Contact Us';
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/includes/mail.php';
 
@@ -53,20 +53,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
                     <div>
                         <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('identity'); ?></label>
-                        <input type="text" name="name" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none">
+                        <input type="text" name="name" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none">
                     </div>
                     <div>
                         <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('electronic_mail'); ?></label>
-                        <input type="email" name="email" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none">
+                        <input type="email" name="email" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none">
                     </div>
                 </div>
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('topic'); ?></label>
-                    <input type="text" name="subject" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none">
+                    <input type="text" name="subject" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none">
                 </div>
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-3 ml-2"><?php echo __('detailed_inquiry'); ?></label>
-                    <textarea name="message" rows="6" required class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-xs focus:border-amber-600 transition-all uppercase outline-none no-scrollbar"></textarea>
+                    <textarea name="message" rows="6" required class="w-full bg-white/5 border border-white/10 p-6 rounded-2xl text-white text-sm focus:border-amber-600 transition-all outline-none no-scrollbar"></textarea>
                 </div>
                 <button type="submit" class="w-full py-8 bg-white text-black font-black uppercase text-[11px] tracking-[0.5em] rounded-full hover:bg-amber-600 hover:text-white transition-all shadow-2xl">
                     <?php echo __('dispatch'); ?>

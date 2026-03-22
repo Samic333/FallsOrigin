@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Public Sentiment';
-require_once __DIR__ . '/../includes/admin_header.php';
+require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
 

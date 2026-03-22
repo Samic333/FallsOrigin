@@ -47,7 +47,11 @@ $products = $stmt->fetchAll();
                         <p class="text-white/40 text-[11px] uppercase font-medium tracking-wide leading-relaxed line-clamp-2">
                             <?php echo htmlspecialchars($product['description']); ?>
                         </p>
-                        <button class="btn btn-gold w-full mt-6"><?php echo __('add_to_cart'); ?></button>
+                        <?php if ($product['stock_quantity'] > 0): ?>
+                            <button class="btn btn-gold w-full mt-6"><?php echo __('add_to_cart'); ?></button>
+                        <?php else: ?>
+                            <button class="btn w-full mt-6" style="background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed;" disabled>Out of Stock</button>
+                        <?php endif; ?>
                     </div>
                 </a>
             </div>

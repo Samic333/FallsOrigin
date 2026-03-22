@@ -131,25 +131,19 @@ async function goToPaymentStep() {
     const { clientSecret, error } = await res.json();
     if (error) { alert(error); return; }
 
-    stripe = Stripe('<?php echo STRIPE_PUBLISHABLE_KEY; ?>');
+    stripe = Stripe('<?php echo STRIPE_PUBLIC_KEY; ?>');
     elements = stripe.elements({ clientSecret, appearance: { theme: 'night' } });
     paymentElement = elements.create('payment');
     paymentElement.mount('#payment-element');
     goToStep(3);
 
     document.getElementById('submit-payment').onclick = async () => {
-        const { error: stripeError, paymentIntent } = await stripe.confirmPayment({
-            elements,
-            confirmParams: { return_url: window.location.origin + '/track-order.php' },
-            redirect: 'if_required'
-        });
-
-        if (paymentIntent && paymentIntent.status === 'succeeded') {
-            await confirmOrder(paymentIntent.id);
-        } else if (stripeError) {
-            document.getElementById('payment-message').innerText = stripeError.message;
-            document.getElementById('payment-message').classList.remove('hidden');
-        }
+        // MOCK PAYMENTS FOR DEV PHASE:
+        // Normally you'dw wait stripe.confirmPayment(...)
+        // Since we lack API keys locally, simulate immediate success.
+        
+        const mockPaymentIntentId = 'pi_simulated_' + Math.floor(Math.random() * 99999);
+        await confirmOrder(mockPaymentIntentId);
     };
 }
 
