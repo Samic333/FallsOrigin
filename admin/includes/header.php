@@ -30,29 +30,29 @@ $currentPage = basename($_SERVER['PHP_SELF']);
     <aside class="w-80 bg-[#0a0a0a] border-r border-white/5 flex flex-col h-screen">
         <div class="p-12 pb-8 border-b border-white/5">
             <h1 class="text-2xl font-black uppercase tracking-[0.3em] text-white">Origin <span class="text-amber-600">OS</span></h1>
-            <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mt-4">Command Center</p>
+            <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/40 mt-4">Command Center</p>
         </div>
         
         <nav class="flex-1 overflow-y-auto no-scrollbar py-8 px-6 space-y-2">
-            <a href="dashboard.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'dashboard.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="dashboard.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'dashboard.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Dashboard
             </a>
-            <a href="products.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo in_array($currentPage, ['products.php', 'product-edit.php']) ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="products.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo in_array($currentPage, ['products.php', 'product-edit.php']) ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Catalog
             </a>
-            <a href="orders.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo in_array($currentPage, ['orders.php', 'order-view.php']) ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="orders.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo in_array($currentPage, ['orders.php', 'order-view.php']) ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Ledger (Orders)
             </a>
-            <a href="messages.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'messages.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="messages.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'messages.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Comms (Messages)
             </a>
-            <a href="reviews.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'reviews.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="reviews.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'reviews.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Testimonials
             </a>
-            <a href="admins.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'admins.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="admins.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'admins.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Identity Mgt
             </a>
-            <a href="settings.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'settings.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+            <a href="settings.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'settings.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 System Matrix
             </a>
         </nav>
@@ -69,7 +69,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
         <header class="sticky top-0 z-50 bg-[#050505]/90 backdrop-blur-xl border-b border-white/5 px-16 py-8 flex justify-between items-center">
             <h2 class="text-xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo htmlspecialchars($pageTitle); ?></h2>
             <div class="flex items-center gap-6">
-                <a href="../index.php" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-amber-500 transition-colors">View Live Site</a>
+                <a href="../index.php" target="_blank" class="text-[10px] font-black uppercase tracking-widest text-white/60 hover:text-amber-500 transition-colors">View Live Site</a>
                 <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
             </div>
         </header>
