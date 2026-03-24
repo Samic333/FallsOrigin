@@ -26,10 +26,8 @@ function send_customer_email($to_email, $subject, $body) {
         define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
     }
     
-    // Simple headers for maximum compatibility
-    $headers = "From: " . ADMIN_EMAIL . "\r\n";
-    $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
-    $headers .= "X-Mailer: PHP/" . phpversion();
+    // Absolute minimal header for Namecheap baseline
+    $headers = "From: " . ADMIN_EMAIL;
     
     return mail($to_email, $subject, $body, $headers);
 }
