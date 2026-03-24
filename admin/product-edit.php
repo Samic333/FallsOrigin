@@ -40,6 +40,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $image_url = $product['image_url'] ?? 'assets/img/product_front.png';
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
         $uploadDir = __DIR__ . '/../assets/img/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
         $fileName = time() . '_' . basename($_FILES['image']['name']);
         $targetPath = $uploadDir . $fileName;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {

@@ -42,14 +42,7 @@ $products = $stmt->fetchAll();
 
         <!-- Product Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-            <?php 
-            $imageMap = [
-                'Yirgacheffe' => 'yirgacheffe.png',
-                'Sidamo' => 'sidamo.png',
-                'Guji' => 'guji.png'
-            ];
-            foreach ($products as $product): 
-            ?>
+            <?php foreach ($products as $product): ?>
             <div class="product-card">
                 <a href="product.php?id=<?php echo $product['id']; ?>" class="block px-10 py-12 text-decoration-none">
                     <div class="product-image-container mb-8 overflow-hidden rounded-lg bg-black/20 border border-white/5">

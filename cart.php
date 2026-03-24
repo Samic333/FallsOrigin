@@ -62,16 +62,11 @@ if (isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
         <?php else: ?>
             <div class="space-y-6 mb-16">
                 <?php foreach ($cartItems as $item): 
-                    $imageMap = [
-                        'Yirgacheffe' => 'yirgacheffe.png',
-                        'Sidamo' => 'sidamo.png',
-                        'Guji' => 'guji.png'
-                    ];
-                    $imgName = $imageMap[$item['product']['name']] ?? 'product_front.png';
+                    $displayImg = !empty($item['product']['image_url']) ? $item['product']['image_url'] : 'assets/img/product_front.png';
                 ?>
                 <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2.5rem] flex items-center group hover:border-white/10 transition-all shadow-lg">
                     <div class="w-32 h-32 bg-black/20 rounded-2xl flex items-center justify-center p-4 mr-8 group-hover:scale-105 transition-transform duration-500 border border-white/5">
-                        <img src="assets/img/<?php echo $imgName; ?>" class="max-w-full max-h-full object-contain" style="image-rendering: -webkit-optimize-contrast;">
+                        <img src="<?php echo htmlspecialchars($displayImg); ?>" class="max-w-full max-h-full object-contain" style="image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <div class="flex-grow">
                         <h4 class="text-xl font-serif font-bold uppercase tracking-tight text-white mb-2"><?php echo htmlspecialchars($item['product']['name']); ?></h4>

@@ -37,19 +37,13 @@ $featuredProduct = $products[0] ?? null;
     <div class="container">
         <h2 class="section-title font-serif" style="text-transform: none; letter-spacing: -0.02em;"><?php echo __('our_collection'); ?></h2>
         <div class="collection-grid">
-            <?php 
-            $imageMap = [
-                'Yirgacheffe' => 'yirgacheffe.png',
-                'Sidamo' => 'sidamo.png',
-                'Guji' => 'guji.png'
-            ];
-            foreach ($products as $product): 
-                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
+            <?php foreach ($products as $product): 
+                $displayImg = !empty($product['image_url']) ? $product['image_url'] : 'assets/img/product_front.png';
             ?>
             <div class="product-card">
                 <a href="product.php?id=<?php echo $product['id']; ?>" style="text-decoration: none; color: inherit;">
                     <div class="product-image-container" style="margin-bottom: 2rem; overflow: hidden; border-radius: 4px;">
-                        <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; height: auto; display: block; transition: var(--transition);">
+                        <img src="<?php echo htmlspecialchars($displayImg); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; height: auto; display: block; transition: var(--transition); image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <h3 class="product-name font-serif" style="margin-bottom: 0.25rem;"><?php echo htmlspecialchars($product['name']); ?></h3>
                     <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>
