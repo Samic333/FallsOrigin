@@ -3,57 +3,65 @@ $pageTitle = 'Control Settings';
 require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
-
-// Auto-patch: Ensure settings table and hero_image key exist
-$db->exec("CREATE TABLE IF NOT EXISTS settings (
-    setting_key VARCHAR(50) PRIMARY KEY,
-    setting_value TEXT NOT NULL
-)");
-$check = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = 'hero_image'");
-$check->execute();
-if (!$check->fetch()) {
-    $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)")
-       ->execute(['hero_image', 'assets/img/hero-coffee.png']);
-}
-
-// Ensure opacity settings exist
-$keys = ['hero_opacity' => '0.95', 'hero_overlay_strength' => '0.6'];
-foreach ($keys as $k => $v) {
-    $c = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = ?");
-    $c->execute([$k]);
-    if (!$c->fetch()) {
-        $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)")->execute([$k, $v]);
-    }
-}
-
-// Handle Settings Update
 $message = '';
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action']) && $_POST['action'] === 'update_hero') {
-        // Handle Image
-        if (!empty($_FILES['hero_image']['name'])) {
-            $targetDir = "../assets/img/";
-            $fileName = "hero-coffee-" . time() . "." . pathinfo($_FILES["hero_image"]["name"], PATHINFO_EXTENSION);
-            $targetFile = $targetDir . $fileName;
-            
-            if (move_uploaded_file($_FILES["hero_image"]["tmp_name"], $targetFile)) {
-                $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_image'")
-                   ->execute(['assets/img/' . $fileName]);
-                log_admin_action("Update Hero Image", "Changed hero asset to $fileName");
-            }
-        }
-        
-        // Handle Opacity/Overlay
-        $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_opacity'")->execute([$_POST['hero_opacity']]);
-        $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_overlay_strength'")->execute([$_POST['hero_overlay_strength']]);
-        $message = "Atmospheric settings updated successfully.";
+$settings_data = [];
+$logs = [];
+$admins = [];
+
+try {
+    // Auto-patch: Ensure settings table and hero_image key exist
+    $db->exec("CREATE TABLE IF NOT EXISTS settings (
+        setting_key VARCHAR(50) PRIMARY KEY,
+        setting_value TEXT NOT NULL
+    )");
+    $check = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = 'hero_image'");
+    $check->execute();
+    if (!$check->fetch()) {
+        $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)")
+           ->execute(['hero_image', 'assets/img/hero-coffee.png']);
     }
+
+    // Ensure opacity settings exist
+    $keys = ['hero_opacity' => '0.95', 'hero_overlay_strength' => '0.6'];
+    foreach ($keys as $k => $v) {
+        $c = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = ?");
+        $c->execute([$k]);
+        if (!$c->fetch()) {
+            $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)")->execute([$k, $v]);
+        }
+    }
+
+    // Handle Settings Update
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (isset($_POST['action']) && $_POST['action'] === 'update_hero') {
+            // Handle Image
+            if (!empty($_FILES['hero_image']['name'])) {
+                $targetDir = "../assets/img/";
+                $fileName = "hero-coffee-" . time() . "." . pathinfo($_FILES["hero_image"]["name"], PATHINFO_EXTENSION);
+                $targetFile = $targetDir . $fileName;
+                
+                if (move_uploaded_file($_FILES["hero_image"]["tmp_name"], $targetFile)) {
+                    $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_image'")
+                       ->execute(['assets/img/' . $fileName]);
+                    log_admin_action("Update Hero Image", "Changed hero asset to $fileName");
+                }
+            }
+            
+            // Handle Opacity/Overlay
+            $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_opacity'")->execute([$_POST['hero_opacity']]);
+            $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_overlay_strength'")->execute([$_POST['hero_overlay_strength']]);
+            $message = "Atmospheric settings updated successfully.";
+        }
+    }
+
+    $logs = $db->query("SELECT * FROM admin_audit_logs ORDER BY created_at DESC LIMIT 50")->fetchAll();
+    $admins = $db->query("SELECT * FROM admin_users")->fetchAll();
+    $settings_data = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
+
+} catch (PDOException $e) {
+    echo "<div class='bg-red-500/10 p-6 border border-red-500/20 rounded-2xl mb-8'><p class='text-red-500 text-xs font-mono uppercase'>Database Integrity Failure: " . e($e->getMessage()) . "</p></div>";
 }
 
-$logs = $db->query("SELECT * FROM admin_audit_logs ORDER BY created_at DESC LIMIT 50")->fetchAll();
-$admins = $db->query("SELECT * FROM admin_users")->fetchAll();
-
-$settings_data = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
 $heroImg = $settings_data['hero_image'] ?? 'assets/img/hero-coffee.png';
 $heroOpacity = $settings_data['hero_opacity'] ?? '0.95';
 $heroOverlayStr = $settings_data['hero_overlay_strength'] ?? '0.6';

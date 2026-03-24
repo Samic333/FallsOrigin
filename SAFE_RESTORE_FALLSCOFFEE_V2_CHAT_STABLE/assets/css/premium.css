@@ -112,9 +112,10 @@ header {
 
 /* Hero Section Refinement - Heritage + Premium Composite */
 .hero-section {
-    min-height: 90vh;
+    min-height: 85vh; /* Balanced height */
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Move content higher */
+    padding-top: 120px; /* Precise gap from header */
     position: relative;
     overflow: hidden;
     background-color: #0B0F14;
@@ -137,7 +138,6 @@ header {
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, #0B0F14 20%, rgba(11, 15, 20, 0.4) 50%, transparent 100%);
     z-index: 1;
 }
 
@@ -145,14 +145,19 @@ header {
     position: relative;
     z-index: 10;
     display: flex;
-    align-items: center;
+    align-items: flex-start; /* Align text higher */
+    width: 100%;
     min-height: calc(90vh - 80px);
 }
 
 .hero-content {
     max-width: 520px;
-    padding: 2rem 0;
-    text-align: left;
+    padding: 0; /* Minimized spacing */
+    text-align: left !important;
+}
+
+.hero-content h1, .hero-content p {
+    text-align: left !important;
 }
 
 .hero-actions {
