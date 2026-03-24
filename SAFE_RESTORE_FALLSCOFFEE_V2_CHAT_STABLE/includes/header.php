@@ -32,7 +32,7 @@ require_once __DIR__ . '/db.php';
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="assets/css/premium.css?v=<?php echo filemtime(__DIR__ . '/../assets/css/premium.css'); ?>">
+    <link rel="stylesheet" href="assets/css/brand-master.css?v=<?php echo filemtime(__DIR__ . '/../assets/css/brand-master.css'); ?>">
     <style>
 
         body { font-family: 'Inter', sans-serif; background-color: #050505; color: #f5f5f4; -webkit-font-smoothing: antialiased; }

@@ -34,7 +34,7 @@ $orders = $stmt->fetchAll();
             <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search ID / Name..." class="w-full md:w-auto bg-white/[0.02] border border-white/5 p-3 rounded-full text-white text-[10px] font-black uppercase tracking-widest outline-none focus:border-amber-600 px-6">
             <select name="status" onchange="this.form.submit()" class="w-full md:w-auto bg-white/[0.02] border border-white/5 p-3 rounded-full text-white text-[10px] font-black uppercase tracking-widest outline-none focus:border-amber-600 appearance-none px-6">
                 <option value="all">ALL STATUSES</option>
-                <?php foreach (['New', 'Paid', 'Preparing', 'Out for Delivery', 'Accepted', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as $s): ?>
+                <?php foreach (['pending', 'paid', 'preparing', 'shipped', 'delivered', 'cancelled', 'refunded'] as $s): ?>
                     <option value="<?php echo $s; ?>" <?php echo $status == $s ? 'selected' : ''; ?>><?php echo mb_strtoupper($s); ?></option>
                 <?php endforeach; ?>
             </select>

@@ -14,35 +14,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (isset($_POST['status'])) {
         $status = $_POST['status'];
-        $carrier = $_POST['carrier'];
-        $tracking = $_POST['tracking_number'];
-        $eta = $_POST['eta'];
-        $signature = $_POST['delivery_signature'];
+        $carrier = $_POST['carrier'] ?? '';
+        $tracking = $_POST['tracking_number'] ?? '';
+        $eta = $_POST['eta'] ?? '';
+        $signature = $_POST['delivery_signature'] ?? '';
 
         $stmt = $db->prepare("SELECT status, email, customer_name FROM orders WHERE id = ?");
         $stmt->execute([$id]);
         $oldOrder = $stmt->fetch();
 
-        // Ensure carrier column update doesn't crash if missing, handle mock gracefully
-        try {
-            $stmt = $db->prepare("UPDATE orders SET status = ?, carrier = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
-            $stmt->execute([$status, $carrier, $tracking, $eta, $signature, $id]);
-        } catch(PDOException $e) {
-            // fallback if mock or old schema
-            $stmt = $db->prepare("UPDATE orders SET status = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
-            $stmt->execute([$status, $tracking, $eta, $signature, $id]);
+        if ($oldOrder['status'] !== $status) {
+            // Log Status Change
+            $stmt = $db->prepare("INSERT INTO order_status_history (order_id, old_status, new_status, admin_user) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$id, $oldOrder['status'], $status, $_SESSION['admin_user']]);
         }
 
-        log_admin_action('Update Order', "Order {$id} status set to {$status}, carrier set to {$carrier}.");
+        $stmt = $db->prepare("UPDATE orders SET status = ?, carrier = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
+        $stmt->execute([$status, $carrier, $tracking, $eta, $signature, $id]);
+
+        log_admin_action('Update Order', "Order {$id} status set to {$status}.");
         $msg = "Order updated successfully.";
         
-        if ($status === 'Shipped' && $oldOrder['status'] !== 'Shipped' && !empty($tracking)) {
-            require_once __DIR__ . '/../includes/mail.php';
-            $site_url = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
-            $trackingLink = $site_url . "/track-order.php?token=" . urlencode($id);
+        if ($status === 'shipped' && $oldOrder['status'] !== 'shipped' && !empty($tracking)) {
+            require_once __DIR__ . '/../includes/classes/Mailer.php';
+            $mailer = Mailer::getInstance();
+            $trackingLink = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'] . "/track-order.php?token=" . urlencode($id);
             $emailBody = "Hello {$oldOrder['customer_name']},\n\nYour order #{$id} has been shipped via {$carrier}!\n\nTracking Number: {$tracking}\nEstimated Arrival: {$eta}\n\nYou can track your order live here:\n{$trackingLink}\n\nThank you for choosing Falls Origin Coffee.";
-            send_customer_email($oldOrder['email'], "Your Order #{$id} has Shipped", $emailBody);
-            log_admin_action('Notification Sent', "Shipped notification sent for Order {$id}.");
+            $mailer->send($oldOrder['email'], "Your Order #{$id} has Shipped", $emailBody, $id);
             $msg .= " Shipping confirmation email deployed.";
         }
     }
@@ -146,8 +144,8 @@ $items = json_decode($order['items'], true);
                     <div>
                         <label class="text-[8px] font-black uppercase tracking-widest text-white/20 block mb-4">Current Phase</label>
                         <select name="status" class="w-full bg-stone-900 border border-white/5 p-4 rounded-xl text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-amber-600 transition-all appearance-none">
-                            <?php foreach (['New', 'Accepted', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as $s): ?>
-                                <option value="<?php echo $s; ?>" <?php echo $order['status'] == $s ? 'selected' : ''; ?>><?php echo $s; ?></option>
+                            <?php foreach (['pending', 'paid', 'preparing', 'shipped', 'delivered', 'cancelled', 'refunded'] as $s): ?>
+                                <option value="<?php echo $s; ?>" <?php echo $order['status'] == $s ? 'selected' : ''; ?>><?php echo strtoupper($s); ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -162,7 +160,14 @@ $items = json_decode($order['items'], true);
                     </div>
                     <div>
                         <label class="text-[8px] font-black uppercase tracking-widest text-white/20 block mb-4">Tracking Number</label>
-                        <input name="tracking_number" type="text" value="<?php echo e($order['tracking_number']); ?>" placeholder="NUL_UNASSIGNED" class="w-full bg-stone-900 border border-white/5 p-4 rounded-xl text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-amber-600 transition-all">
+                        <div class="flex gap-4">
+                            <input name="tracking_number" type="text" value="<?php echo e($order['tracking_number']); ?>" placeholder="NUL_UNASSIGNED" class="flex-grow bg-stone-900 border border-white/5 p-4 rounded-xl text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-amber-600 transition-all">
+                            <?php if (!empty($order['tracking_number'])): ?>
+                                <a href="<?php echo get_tracking_url($order['carrier'], $order['tracking_number']); ?>" target="_blank" class="p-4 bg-white/5 border border-white/10 rounded-xl text-amber-500 hover:bg-amber-500 hover:text-white transition-all flex items-center justify-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x1="21" y1="14" y2="3"/></svg>
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                     <div>
                         <label class="text-[8px] font-black uppercase tracking-widest text-white/20 block mb-4">ETA Projection</label>

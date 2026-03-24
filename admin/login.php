@@ -18,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_user'] = $user['username'];
+        $_SESSION['admin_role'] = $user['role'] ?? 'admin';
         $db->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
         log_admin_action('Login', 'Admin user ' . $user['username'] . ' successfully authenticated.');
         header('Location: dashboard.php');

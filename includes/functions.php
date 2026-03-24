@@ -10,6 +10,14 @@ if (session_status() === PHP_SESSION_NONE) {
     ]);
 }
 
+// Production Security Headers
+if (!headers_sent()) {
+    header("X-Frame-Options: SAMEORIGIN");
+    header("X-XSS-Protection: 1; mode=block");
+    header("X-Content-Type-Options: nosniff");
+    header("Referrer-Policy: strict-origin-when-cross-origin");
+}
+
 /**
  * CSRF Protection
  */
@@ -166,4 +174,25 @@ function log_admin_action($action, $details = '') {
     $stmt = $db->prepare("INSERT INTO admin_audit_logs (admin_user, action, details) VALUES (?, ?, ?)");
     $stmt->execute([$user, $action, $details]);
 }
-?>
+
+/**
+ * Generates an external tracking URL based on carrier and tracking number.
+ */
+function get_tracking_url($carrier, $number) {
+    if (empty($number)) return '#';
+    $carrier = strtolower($carrier);
+    $number = trim($number);
+
+    if (strpos($carrier, 'canada post') !== false) {
+        return "https://www.canadapost-postescanada.ca/track-reperage/en#/resultList?searchFor=" . $number;
+    } elseif (strpos($carrier, 'dhl') !== false) {
+        return "https://www.dhl.com/en/express/tracking.html?AWB=" . $number . "&brand=DHL";
+    } elseif (strpos($carrier, 'ups') !== false) {
+        return "https://www.ups.com/track?tracknum=" . $number;
+    } elseif (strpos($carrier, 'fedex') !== false) {
+        return "https://www.fedex.com/apps/fedextrack/?tracknumbers=" . $number;
+    }
+    
+    // Fallback to Google Search
+    return "https://www.google.com/search?q=" . urlencode($carrier . " tracking " . $number);
+}

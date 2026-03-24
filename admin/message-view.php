@@ -27,7 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $reply = $_POST['reply_body'];
         $subject = "Re: " . $mainMsg['subject'];
         
-        if (send_customer_email($email, $subject, $reply)) {
+        require_once __DIR__ . '/../includes/classes/Mailer.php';
+        $mailer = Mailer::getInstance();
+
+        if ($mailer->send($email, $subject, $reply)) {
             // 1. Log reply on the MAIN thread record for legacy/status
             $db->prepare("UPDATE contact_messages SET status = 'Replied', reply_content = ?, replied_at = CURRENT_TIMESTAMP WHERE id = ?")
                ->execute([$reply, $mainMsg['id']]);

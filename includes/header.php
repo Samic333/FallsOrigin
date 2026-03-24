@@ -1,6 +1,15 @@
 <?php
 require_once __DIR__ . '/functions.php';
 require_once __DIR__ . '/db.php';
+
+$db = DB::getInstance();
+$site_settings = [];
+try {
+    $site_settings = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
+} catch (Exception $e) {}
+
+$seo_title = $site_settings['site_title'] ?? 'Falls Origin Coffee';
+$seo_desc = $site_settings['meta_description'] ?? __('footer_desc');
 ?>
 <!DOCTYPE html>
 <html lang="<?php echo $lang; ?>" class="no-scrollbar">
@@ -8,8 +17,8 @@ require_once __DIR__ . '/db.php';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo get_csrf_token(); ?>">
-    <title><?php echo isset($pageTitle) ? $pageTitle . ' | ' : ''; ?>Falls Origin Coffee</title>
-    <meta name="description" content="<?php echo __('footer_desc'); ?>">
+    <title><?php echo isset($pageTitle) ? $pageTitle . ' | ' : ''; ?><?php echo htmlspecialchars($seo_title); ?></title>
+    <meta name="description" content="<?php echo htmlspecialchars($seo_desc); ?>">
     
     <!-- Structured Data -->
     <script type="application/ld+json">

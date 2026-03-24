@@ -1,31 +1,32 @@
-# Enable Rewriting
+# Falls Origin - Production .htaccess
 RewriteEngine On
 
-# Hide .php extension
+# 1. Force HTTPS
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# 2. Support Clean URLs for Products
+# Target: fallscoffee.ca/product/yirgacheffe -> product.php?slug=yirgacheffe
+RewriteRule ^product/([a-zA-Z0-9-]+)/?$ product.php?slug=$1 [L,QSA]
+
+# 3. Support Clean URLs for Tracking
+# Target: fallscoffee.ca/track/ORD-123 -> track-order.php?token=ORD-123
+RewriteRule ^track/([a-zA-Z0-9-]+)/?$ track-order.php?token=$1 [L,QSA]
+
+# 4. Remove .php extension (Optional but recommended)
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
 
-# Redirect track-order to track-order.php
-RewriteRule ^track$ track-order.php [L]
-
-# Prevent Directory Browsing
+# 5. Security: Disable Directory Browsing
 Options -Indexes
 
-# Protect Includes Directory
-RewriteRule ^includes/.*$ - [F,L]
-
-# Custom Error Pages
-ErrorDocument 404 /index.php
-
-# Additional Protections
-<FilesMatch "^(config\.php|db\.php|schema\.sql|.*\.md|.*\.log)$">
-    Require all denied
-</FilesMatch>
-
-<IfModule mod_headers.c>
-    Header set X-Content-Type-Options "nosniff"
-    Header set X-Frame-Options "SAMEORIGIN"
-    Header set X-XSS-Protection "1; mode=block"
-    Header set Referrer-Policy "strict-origin-when-cross-origin"
+# 6. Optimized Caching for Assets
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 month"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
 </IfModule>

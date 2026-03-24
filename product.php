@@ -3,15 +3,43 @@ require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/db.php';
 
 $id = $_GET['id'] ?? null;
+$slug = $_GET['slug'] ?? null;
 $db = DB::getInstance();
-$stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
-$stmt->execute([$id]);
+
+if ($slug) {
+    $stmt = $db->prepare("SELECT * FROM products WHERE slug = ?");
+    $stmt->execute([$slug]);
+} else {
+    $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt->execute([$id]);
+}
 $product = $stmt->fetch();
 
 if (!$product) { header('Location: shop.php'); exit; }
 
 $pageTitle = $product['name'] ?? 'Product Details';
 require_once __DIR__ . '/includes/header.php';
+?>
+<!-- JSON-LD Product Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org/",
+  "@type": "Product",
+  "name": "<?php echo e($product['name']); ?>",
+  "image": "<?php echo e((isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . '/' . $product['image_url']); ?>",
+  "description": "<?php echo e($product['description']); ?>",
+  "sku": "<?php echo e($product['sku'] ?? ''); ?>",
+  "offers": {
+    "@type": "Offer",
+    "url": "<?php echo e((isset($_SERVER['HTTPS']) ? 'https://' : 'http://') . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>",
+    "priceCurrency": "CAD",
+    "price": "<?php echo $product['price']; ?>",
+    "availability": "https://schema.org/<?php echo ($product['stock_quantity'] > 0) ? 'InStock' : 'OutOfStock'; ?>",
+    "itemCondition": "https://schema.org/NewCondition"
+  }
+}
+</script>
+<?php
 
 $reviewsStmt = $db->prepare("SELECT * FROM reviews WHERE status = 'approved' ORDER BY created_at DESC");
 $reviewsStmt->execute();

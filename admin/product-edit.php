@@ -31,6 +31,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     $id = $_POST['id'] ?? null;
     
+    $sku = $_POST['sku'] ?? '';
+    
     $tasting_notes = $_POST['tasting_notes'] ?? '';
     $brewing_suggestions = $_POST['brewing_suggestions'] ?? '';
     $origin_story = $_POST['origin_story'] ?? '';
@@ -55,13 +57,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($error)) {
         try {
             if ($id) {
-                $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, is_active=?, is_featured=?, category_id=?, tasting_notes=?, brewing_suggestions=?, origin_story=? WHERE id=?");
-                $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $is_featured, $category_id, $tasting_notes, $brewing_suggestions, $origin_story, $id]);
+                $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, is_active=?, is_featured=?, category_id=?, tasting_notes=?, brewing_suggestions=?, origin_story=?, sku=? WHERE id=?");
+                $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $is_featured, $category_id, $tasting_notes, $brewing_suggestions, $origin_story, $sku, $id]);
                 $success = "Product updated successfully.";
             } else {
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-                $stmt = $db->prepare("INSERT INTO products (slug, name, origin, price, weight, description, image_url, stock_quantity, is_active, is_featured, category_id, tasting_notes, brewing_suggestions, origin_story) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$slug, $name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $is_featured, $category_id, $tasting_notes, $brewing_suggestions, $origin_story]);
+                $stmt = $db->prepare("INSERT INTO products (slug, name, origin, price, weight, description, image_url, stock_quantity, is_active, is_featured, category_id, tasting_notes, brewing_suggestions, origin_story, sku) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$slug, $name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $is_featured, $category_id, $tasting_notes, $brewing_suggestions, $origin_story, $sku]);
                 $id = $db->lastInsertId();
                 $success = "Product created successfully.";
             }
@@ -141,6 +143,10 @@ try {
                             <option value="<?php echo $cat['id']; ?>" <?php echo (($product['category_id'] ?? '') == $cat['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cat['name']); ?></option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">SKU / ID CODE</label>
+                    <input type="text" name="sku" value="<?php echo htmlspecialchars($product['sku'] ?? ''); ?>" placeholder="FOC-ETH-001" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none font-mono focus:border-amber-600 uppercase">
                 </div>
             </div>
 

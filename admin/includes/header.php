@@ -37,24 +37,39 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <a href="dashboard.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'dashboard.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Dashboard
             </a>
+            
+            <?php if (in_array($_SESSION['admin_role'], ['super_admin', 'admin', 'catalog_manager'])): ?>
             <a href="products.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo in_array($currentPage, ['products.php', 'product-edit.php']) ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Catalog
             </a>
+            <?php endif; ?>
+
+            <?php if (in_array($_SESSION['admin_role'], ['super_admin', 'admin', 'order_manager'])): ?>
             <a href="orders.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo in_array($currentPage, ['orders.php', 'order-view.php']) ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Ledger (Orders)
             </a>
+            <?php endif; ?>
+
+            <?php if (in_array($_SESSION['admin_role'], ['super_admin', 'admin', 'order_manager'])): ?>
             <a href="messages.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'messages.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Comms (Messages)
             </a>
+            <?php endif; ?>
+
+            <?php if (in_array($_SESSION['admin_role'], ['super_admin', 'admin', 'order_manager', 'catalog_manager'])): ?>
             <a href="reviews.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'reviews.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Testimonials
             </a>
+            <?php endif; ?>
+
+            <?php if (in_array($_SESSION['admin_role'], ['super_admin', 'admin'])): ?>
             <a href="admins.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'admins.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Identity Mgt
             </a>
             <a href="settings.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'settings.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
                 Hero & Settings
             </a>
+            <?php endif; ?>
         </nav>
         
         <div class="p-8 border-t border-white/5">

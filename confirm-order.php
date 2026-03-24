@@ -75,14 +75,20 @@ try {
         $itemsJson = json_encode($cartItems);
         $updateItems = $db->prepare("UPDATE orders SET items = ? WHERE id = ?");
         $updateItems->execute([$itemsJson, $orderId]);
+
+        // Fix status to standardized lowercase
+        $db->prepare("UPDATE orders SET status = 'paid' WHERE id = ?")->execute([$orderId]);
     }
 
     $db->commit();
     $_SESSION['cart'] = []; // Clear Cart
 
     // Dispatch receipt email
-    $body = "Greetings {$customerName},\n\nYour order {$orderId} has been successfully received.\nTotal: $" . number_format($total, 2) . " CAD\n\nTrack your order here:\n" . SITE_URL . "/track-order.php?token=" . $orderId . "\n\nThank you for trusting Falls Origin.";
-    send_customer_email($email, "Order Received - {$orderId}", $body);
+    require_once __DIR__ . '/includes/classes/Mailer.php';
+    $mailer = Mailer::getInstance();
+    $site_url = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
+    $body = "Greetings {$customerName},\n\nYour order {$orderId} has been successfully received.\nTotal: $" . number_format($total, 2) . " CAD\n\nTrack your order here:\n" . $site_url . "/track-order.php?token=" . $orderId . "\n\nThank you for trusting Falls Origin.";
+    $mailer->send($email, "Order Received - {$orderId}", $body, $orderId);
 
     echo json_encode(['trackingToken' => $orderId]);
 
