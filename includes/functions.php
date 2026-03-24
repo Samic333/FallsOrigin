@@ -84,7 +84,9 @@ $translations = [
         'settlement_data' => 'Total Amount',
         'verify_different' => 'Track Different Order',
         'secure_communication' => 'Secure Communication',
-        'direct_frequency' => 'Contact Us'
+        'direct_frequency' => 'Contact Us',
+        'shipping_details' => 'Shipping Details',
+        'payment_option' => 'Payment Option'
     ],
     'fr' => [
         'home' => 'Accueil',
@@ -136,7 +138,9 @@ $translations = [
         'settlement_data' => 'Montant Total',
         'verify_different' => 'Suivre une Autre Commande',
         'secure_communication' => 'Communication Sécurisée',
-        'direct_frequency' => 'Contactez-nous'
+        'direct_frequency' => 'Contactez-nous',
+        'shipping_details' => 'Détails d\'expédition',
+        'payment_option' => 'Option de paiement'
     ]
 ];
 

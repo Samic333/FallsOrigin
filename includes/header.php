@@ -9,6 +9,24 @@ require_once __DIR__ . '/db.php';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="<?php echo get_csrf_token(); ?>">
     <title><?php echo isset($pageTitle) ? $pageTitle . ' | ' : ''; ?>Falls Origin Coffee</title>
+    <meta name="description" content="<?php echo __('footer_desc'); ?>">
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "Falls Origin Coffee",
+      "image": "https://fallsorigincoffee.com/assets/img/og-image.jpg",
+      "description": "Premium Ethiopian coffee roasted in Niagara Falls.",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Niagara Falls",
+        "addressRegion": "ON",
+        "addressCountry": "CA"
+      }
+    }
+    </script>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -86,8 +104,8 @@ require_once __DIR__ . '/db.php';
     </header>
 
     <!-- Mobile Drawer Overlay (Extracted from Header context for full viewport height) -->
-    <div id="mobileMenuBackdrop" class="fixed inset-0 bg-black/80 z-[100] hidden md:hidden transition-opacity duration-300 opacity-0 pointer-events-auto"></div>
-    <div id="mobileDrawer" class="fixed top-0 right-0 h-full w-[80%] max-w-[320px] bg-[#0B0F14] border-l border-white/5 shadow-2xl z-[110] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 pb-8 px-8 pointer-events-auto">
+    <div id="mobileMenuBackdrop" class="fixed inset-0 h-[100dvh] bg-black/80 z-[100] hidden md:hidden transition-opacity duration-300 opacity-0 pointer-events-auto"></div>
+    <div id="mobileDrawer" class="fixed top-0 right-0 h-[100dvh] w-[80%] max-w-[320px] bg-[#0B0F14] border-l border-white/5 shadow-2xl z-[110] transform translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col pt-24 pb-8 px-8 pointer-events-auto">
         <button id="closeMenuBtn" class="absolute top-6 right-6 text-white/50 hover:text-white p-2 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
         </button>
@@ -95,14 +113,14 @@ require_once __DIR__ . '/db.php';
             <a href="<?php echo $base_path; ?>index.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('home'); ?></a>
             <a href="<?php echo $base_path; ?>shop.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('collection'); ?></a>
             <a href="<?php echo $base_path; ?>track-order.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('track_order'); ?></a>
-            <a href="<?php echo $base_path; ?>contact.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline"><?php echo __('contact_us'); ?></a>
+            <a href="<?php echo $base_path; ?>contact.php" class="text-white hover:text-amber-600 text-sm font-black tracking-[0.4em] transition-all uppercase no-underline whitespace-nowrap"><?php echo __('contact_us'); ?></a>
             
             <div class="w-full h-px bg-white/10 my-4"></div>
             
             <!-- Mobile Language Select -->
-            <div class="flex items-center gap-4 bg-white/5 rounded-full p-1 border border-white/5 self-start">
-                <a href="<?php echo $en_url; ?>" class="text-[10px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'en' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">EN</a>
-                <a href="<?php echo $fr_url; ?>" class="text-[10px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'fr' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">FR</a>
+            <div class="flex items-center gap-2 bg-white/5 rounded-full p-1 border border-white/5 self-start mt-4">
+                <a href="<?php echo $en_url; ?>" class="text-[11px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'en' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">EN</a>
+                <a href="<?php echo $fr_url; ?>" class="text-[11px] font-black px-4 py-2 rounded-full transition-all <?php echo $lang === 'fr' ? 'bg-[#D4A373] text-white' : 'text-white/30'; ?>">FR</a>
             </div>
         </nav>
     </div>

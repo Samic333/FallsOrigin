@@ -18,23 +18,6 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- Products Registry
-CREATE TABLE IF NOT EXISTS `products` (
-  `id` varchar(50) NOT NULL,
-  `name` varchar(100) NOT NULL,
-  `description` text,
-  `price` decimal(10,2) NOT NULL,
-  `type` varchar(50) DEFAULT 'Single Origin',
-  `origin` varchar(100) DEFAULT NULL,
-  `weight` varchar(20) DEFAULT '340g',
-  `image_url` varchar(255) DEFAULT NULL,
-  `roast_intensity` int DEFAULT 3,
-  `stock_quantity` int DEFAULT 0,
-  `active` tinyint(1) DEFAULT 1,
-  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 -- Orders Master
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` varchar(50) NOT NULL,
@@ -47,6 +30,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `total` decimal(10,2) NOT NULL,
   `status` varchar(50) DEFAULT 'Paid',
   `tracking_token` varchar(64) NOT NULL,
+  `carrier` varchar(50) DEFAULT NULL,
   `tracking_number` varchar(100) DEFAULT NULL,
   `eta` varchar(100) DEFAULT NULL,
   `delivery_method` varchar(50) DEFAULT 'Standard',
@@ -70,6 +54,34 @@ CREATE TABLE IF NOT EXISTS `reviews` (
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Taxonomy
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) NOT NULL,
+  `description` text DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Product Catalog
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `slug` varchar(100) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `origin` varchar(100) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `weight` varchar(50) NOT NULL,
+  `description` text NOT NULL,
+  `image_url` varchar(255) DEFAULT NULL,
+  `stock_quantity` int(11) DEFAULT 0,
+  `tasting_notes` text DEFAULT NULL,
+  `brewing_suggestions` text DEFAULT NULL,
+  `origin_story` text DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `category_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Inbox (Contact Messages)

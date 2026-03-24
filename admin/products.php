@@ -5,20 +5,50 @@ require_once __DIR__ . '/includes/header.php';
 $db = DB::getInstance();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
     if (isset($_POST['delete_product_id'])) {
         $stmt = $db->prepare("DELETE FROM products WHERE id = ?");
         $stmt->execute([$_POST['delete_product_id']]);
         $msg = "Product deleted.";
     }
 }
+$category = $_GET['category'] ?? 'all';
+$query = "SELECT * FROM products";
+$params = [];
+if ($category !== 'all') {
+    $query .= " WHERE category_id = ?";
+    $params[] = $category;
+}
+$query .= " ORDER BY id ASC";
 
-$products = $db->query("SELECT * FROM products ORDER BY id ASC")->fetchAll();
+$stmt = $db->prepare($query);
+$stmt->execute($params);
+$products = $stmt->fetchAll();
 ?>
 
 <div class="bg-[#0a0a0a] border border-white/5 rounded-[3rem] overflow-hidden mb-12">
-    <div class="p-10 border-b border-white/5 flex justify-between items-center">
+    <div class="p-10 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
         <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white">Product Catalog</h3>
-        <a href="product-edit.php" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full transition-colors">Add New Product</a>
+        <div class="flex items-center gap-4">
+            <form action="products.php" method="GET" class="flex items-center gap-2">
+                <select name="category" onchange="this.form.submit()" class="bg-white/[0.02] border border-white/5 p-3 rounded-full text-white text-[10px] font-black uppercase tracking-widest outline-none focus:border-amber-600 appearance-none px-6">
+                    <option value="all">ALL CATEGORIES</option>
+                    <?php 
+                    try {
+                        $cats = $db->query("SELECT * FROM categories")->fetchAll();
+                        foreach ($cats as $c): 
+                    ?>
+                        <option value="<?php echo $c['id']; ?>" <?php echo $category == $c['id'] ? 'selected' : ''; ?>><?php echo htmlspecialchars($c['name']); ?></option>
+                    <?php 
+                        endforeach; 
+                    } catch(Exception $e) {} 
+                    ?>
+                </select>
+            </form>
+            <a href="product-edit.php" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full transition-colors">Add New Product</a>
+        </div>
     </div>
 
     <?php if (isset($msg)): ?>
@@ -63,6 +93,7 @@ $products = $db->query("SELECT * FROM products ORDER BY id ASC")->fetchAll();
                     <td class="px-10 py-8 text-right flex justify-end gap-4">
                         <a href="product-edit.php?id=<?php echo $product['id']; ?>" class="text-[10px] font-black uppercase tracking-widest text-amber-600 hover:text-amber-500 transition-colors">Edit</a>
                         <form action="products.php" method="POST" onsubmit="return confirm('Are you sure you want to delete this product?');" class="inline">
+                            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                             <input type="hidden" name="delete_product_id" value="<?php echo $product['id']; ?>">
                             <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-red-500 hover:text-red-400 transition-colors">Delete</button>
                         </form>

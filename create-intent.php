@@ -14,8 +14,8 @@ $csrfToken = $_POST['csrf_token'] ?? '';
 
 // Basic CSRF validation
 if (!validate_csrf_token($csrfToken)) {
-    // For test mode, we'll allow it or just bypass depending on session scope
-    // echo json_encode(['error' => 'Tokens mismatch']); exit;
+    echo json_encode(['error' => 'CSRF Token mismatch']); 
+    exit;
 }
 
 // In a real application, you would connect to Stripe here

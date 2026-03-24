@@ -61,9 +61,9 @@ class DB {
  */
 class MockPDOStatement {
     private $data = [
-        ['id' => 1, 'name' => 'Yirgacheffe', 'origin' => 'Ethiopia', 'price' => 28.00, 'weight' => '340g', 'description' => 'Bright floral notes with a distinct lemony acidity and silk-like body.', 'image_url' => 'assets/img/yirgacheffe.png', 'type' => 'coffee', 'stock_quantity' => 10],
-        ['id' => 2, 'name' => 'Sidamo', 'origin' => 'Ethiopia', 'price' => 26.00, 'weight' => '340g', 'description' => 'Deep berry-like flavors with a smooth chocolate finish and medium body.', 'image_url' => 'assets/img/sidamo.png', 'type' => 'coffee', 'stock_quantity' => 10],
-        ['id' => 3, 'name' => 'Guji', 'origin' => 'Ethiopia', 'price' => 32.00, 'weight' => '340g', 'description' => 'Complex jasmine aroma with notes of sweet peach and a clean honey finish.', 'image_url' => 'assets/img/guji.png', 'type' => 'coffee', 'stock_quantity' => 10]
+        ['id' => 1, 'name' => 'Yirgacheffe', 'origin' => 'Ethiopia', 'price' => 28.00, 'weight' => '340g', 'description' => 'Bright floral notes with a distinct lemony acidity and silk-like body.', 'tasting_notes' => 'Jasmine, Bergamot, Blueberry', 'brewing_suggestions' => 'Pour over (V60), 1:15 ratio, 93°C water', 'origin_story' => 'Grown in the high altitudes of the Yirgacheffe region, these heirloom varietals are hand-picked by local farmers.', 'image_url' => 'assets/img/yirgacheffe.png', 'type' => 'coffee', 'stock_quantity' => 10],
+        ['id' => 2, 'name' => 'Sidamo', 'origin' => 'Ethiopia', 'price' => 26.00, 'weight' => '340g', 'description' => 'Deep berry-like flavors with a smooth chocolate finish and medium body.', 'tasting_notes' => 'Dark Chocolate, Blackberry, Maple', 'brewing_suggestions' => 'French Press or Espresso', 'origin_story' => 'From the Guji zone of Sidamo, naturally processed and sun-dried on raised beds.', 'image_url' => 'assets/img/sidamo.png', 'type' => 'coffee', 'stock_quantity' => 10],
+        ['id' => 3, 'name' => 'Guji', 'origin' => 'Ethiopia', 'price' => 32.00, 'weight' => '340g', 'description' => 'Complex jasmine aroma with notes of sweet peach and a clean honey finish.', 'tasting_notes' => 'Peach, Honey, Jasmine', 'brewing_suggestions' => 'Chemex, 1:16 ratio', 'origin_story' => 'Direct trade from a micro-lot in the Guji region, known for its exceptional sweetness.', 'image_url' => 'assets/img/guji.png', 'type' => 'coffee', 'stock_quantity' => 10]
     ];
 
     public function execute($params = []) { 

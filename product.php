@@ -37,7 +37,7 @@ $reviews = $reviewsStmt->fetchAll();
             <!-- Product Data -->
             <div class="py-12">
                 <div class="mb-12">
-                    <span class="text-amber-600 text-[11px] font-black uppercase tracking-[0.5em] mb-4 block italic"><?php echo __('provenance'); ?></span>
+                    <span class="text-amber-600 text-[11px] font-black uppercase tracking-[0.5em] mb-4 block italic"><?php echo __('provenance'); ?> - <?php echo htmlspecialchars($product['origin'] ?? 'Blend'); ?></span>
                     <h1 class="text-7xl font-serif font-bold text-white uppercase tracking-tighter italic leading-[0.8] mb-8"><?php echo htmlspecialchars($product['name']); ?></h1>
                     <p class="text-white/50 text-xl font-medium tracking-tight leading-relaxed uppercase max-w-xl">
                         <?php echo htmlspecialchars($product['description']); ?>
@@ -53,6 +53,30 @@ $reviews = $reviewsStmt->fetchAll();
                         <p class="text-[10px] font-black uppercase tracking-widest text-white/20 mb-4 italic"><?php echo __('settlement_data'); ?></p>
                         <p class="text-amber-600 text-sm font-bold uppercase tracking-widest">$<?php echo number_format($product['price'], 2); ?> CAD</p>
                     </div>
+                </div>
+
+                <!-- Rich Product Details -->
+                <div class="space-y-10 mb-16 py-8">
+                    <?php if (!empty($product['tasting_notes'])): ?>
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-[#D4A373] mb-4 italic">Tasting Notes</h3>
+                        <p class="text-white text-sm uppercase tracking-widest leading-relaxed font-black"><?php echo htmlspecialchars($product['tasting_notes']); ?></p>
+                    </div>
+                    <?php endif; ?>
+                    
+                    <?php if (!empty($product['brewing_suggestions'])): ?>
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-[#D4A373] mb-4 italic">Brewing Suggestions</h3>
+                        <p class="text-white/80 text-sm leading-relaxed"><?php echo htmlspecialchars($product['brewing_suggestions']); ?></p>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($product['origin_story'])): ?>
+                    <div>
+                        <h3 class="text-[10px] font-black uppercase tracking-widest text-[#D4A373] mb-4 italic">Origin Story</h3>
+                        <p class="text-white/50 text-sm leading-relaxed max-w-2xl text-justify"><?php echo htmlspecialchars($product['origin_story']); ?></p>
+                    </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="space-y-12">

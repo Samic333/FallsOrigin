@@ -12,6 +12,11 @@ if (!$input) {
     exit;
 }
 
+if (!validate_csrf_token($input['csrf_token'] ?? '')) {
+    echo json_encode(['error' => 'CSRF Token mismatch']);
+    exit;
+}
+
 $db = DB::getInstance();
 
 // Generate unique order ID
@@ -51,17 +56,9 @@ try {
         $prodStmt->execute($ids);
         $products = $prodStmt->fetchAll(PDO::FETCH_ASSOC);
 
-        $insertItem = $db->prepare("INSERT INTO order_items (order_id, product_id, product_name, quantity, price_at_time) VALUES (?, ?, ?, ?, ?)");
-        
         foreach ($products as $p) {
             $qty = $_SESSION['cart'][$p['id']];
-            $insertItem->execute([
-                $orderId, 
-                $p['id'], 
-                $p['name'], 
-                $qty, 
-                $p['price']
-            ]);
+            
             
             // Build items JSON for the admin panel legacy column if still used:
             $cartItems[] = [

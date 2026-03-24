@@ -2,13 +2,44 @@
 $pageTitle = 'Order Registry';
 require_once __DIR__ . '/includes/header.php';
 
-$db = DB::getInstance();
-$orders = $db->query("SELECT * FROM orders ORDER BY created_at DESC")->fetchAll();
+$status = $_GET['status'] ?? 'all';
+$search = $_GET['search'] ?? '';
+
+$query = "SELECT * FROM orders WHERE 1=1";
+$params = [];
+
+if ($status !== 'all') {
+    $query .= " AND status = ?";
+    $params[] = $status;
+}
+
+if (!empty($search)) {
+    $query .= " AND (id LIKE ? OR customer_name LIKE ? OR email LIKE ?)";
+    $searchWild = '%' . $search . '%';
+    $params[] = $searchWild;
+    $params[] = $searchWild;
+    $params[] = $searchWild;
+}
+
+$query .= " ORDER BY created_at DESC";
+$stmt = $db->prepare($query);
+$stmt->execute($params);
+$orders = $stmt->fetchAll();
 ?>
 
 <div class="bg-[#0a0a0a] border border-white/5 rounded-[3rem] overflow-hidden">
-    <div class="p-10 border-b border-white/5 flex justify-between items-center">
+    <div class="p-10 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
         <h3 class="text-xs font-black uppercase tracking-[0.5em] text-white">Full Transaction Ledger</h3>
+        <form action="orders.php" method="GET" class="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+            <input type="text" name="search" value="<?php echo htmlspecialchars($search); ?>" placeholder="Search ID / Name..." class="w-full md:w-auto bg-white/[0.02] border border-white/5 p-3 rounded-full text-white text-[10px] font-black uppercase tracking-widest outline-none focus:border-amber-600 px-6">
+            <select name="status" onchange="this.form.submit()" class="w-full md:w-auto bg-white/[0.02] border border-white/5 p-3 rounded-full text-white text-[10px] font-black uppercase tracking-widest outline-none focus:border-amber-600 appearance-none px-6">
+                <option value="all">ALL STATUSES</option>
+                <?php foreach (['New', 'Paid', 'Preparing', 'Out for Delivery', 'Accepted', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as $s): ?>
+                    <option value="<?php echo $s; ?>" <?php echo $status == $s ? 'selected' : ''; ?>><?php echo mb_strtoupper($s); ?></option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" class="px-6 py-3 bg-amber-600 hover:bg-amber-500 text-white text-[10px] font-black uppercase tracking-widest rounded-full transition-colors w-full md:w-auto hidden md:block">Search</button>
+        </form>
     </div>
     <div class="overflow-x-auto no-scrollbar">
         <table class="w-full text-left">

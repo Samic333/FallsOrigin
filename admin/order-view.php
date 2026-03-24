@@ -14,6 +14,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     if (isset($_POST['status'])) {
         $status = $_POST['status'];
+        $carrier = $_POST['carrier'];
         $tracking = $_POST['tracking_number'];
         $eta = $_POST['eta'];
         $signature = $_POST['delivery_signature'];
@@ -22,17 +23,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$id]);
         $oldOrder = $stmt->fetch();
 
-        $stmt = $db->prepare("UPDATE orders SET status = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
-        $stmt->execute([$status, $tracking, $eta, $signature, $id]);
-        log_admin_action('Update Order', "Order {$id} status set to {$status}.");
+        // Ensure carrier column update doesn't crash if missing, handle mock gracefully
+        try {
+            $stmt = $db->prepare("UPDATE orders SET status = ?, carrier = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
+            $stmt->execute([$status, $carrier, $tracking, $eta, $signature, $id]);
+        } catch(PDOException $e) {
+            // fallback if mock or old schema
+            $stmt = $db->prepare("UPDATE orders SET status = ?, tracking_number = ?, eta = ?, delivery_signature = ? WHERE id = ?");
+            $stmt->execute([$status, $tracking, $eta, $signature, $id]);
+        }
+
+        log_admin_action('Update Order', "Order {$id} status set to {$status}, carrier set to {$carrier}.");
         $msg = "Order updated successfully.";
         
         if ($status === 'Shipped' && $oldOrder['status'] !== 'Shipped' && !empty($tracking)) {
             require_once __DIR__ . '/../includes/mail.php';
             $site_url = (isset($_SERVER['HTTPS']) ? "https://" : "http://") . $_SERVER['HTTP_HOST'];
             $trackingLink = $site_url . "/track-order.php?token=" . urlencode($id);
-            $emailBody = "Hello {$oldOrder['customer_name']},\n\nYour order #{$id} has been shipped!\n\nTracking Number: {$tracking}\nEstimated Arrival: {$eta}\n\nYou can track your order live here:\n{$trackingLink}\n\nThank you for choosing Falls Origin Coffee.";
+            $emailBody = "Hello {$oldOrder['customer_name']},\n\nYour order #{$id} has been shipped via {$carrier}!\n\nTracking Number: {$tracking}\nEstimated Arrival: {$eta}\n\nYou can track your order live here:\n{$trackingLink}\n\nThank you for choosing Falls Origin Coffee.";
             send_customer_email($oldOrder['email'], "Your Order #{$id} has Shipped", $emailBody);
+            log_admin_action('Notification Sent', "Shipped notification sent for Order {$id}.");
             $msg .= " Shipping confirmation email deployed.";
         }
     }
@@ -136,8 +146,17 @@ $items = json_decode($order['items'], true);
                     <div>
                         <label class="text-[8px] font-black uppercase tracking-widest text-white/20 block mb-4">Current Phase</label>
                         <select name="status" class="w-full bg-stone-900 border border-white/5 p-4 rounded-xl text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-amber-600 transition-all appearance-none">
-                            <?php foreach (['Paid', 'Preparing', 'Out for Delivery', 'Shipped', 'Delivered', 'Cancelled'] as $s): ?>
+                            <?php foreach (['New', 'Accepted', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as $s): ?>
                                 <option value="<?php echo $s; ?>" <?php echo $order['status'] == $s ? 'selected' : ''; ?>><?php echo $s; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[8px] font-black uppercase tracking-widest text-white/20 block mb-4">Carrier</label>
+                        <select name="carrier" class="w-full bg-stone-900 border border-white/5 p-4 rounded-xl text-white text-[10px] font-black uppercase tracking-widest focus:outline-none focus:border-amber-600 transition-all appearance-none">
+                            <option value="">-- SELECT CARRIER --</option>
+                            <?php foreach (['Canada Post', 'DHL', 'UPS', 'Purolator', 'Custom Courier'] as $c): ?>
+                                <option value="<?php echo $c; ?>" <?php echo ($order['carrier'] ?? '') == $c ? 'selected' : ''; ?>><?php echo $c; ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>

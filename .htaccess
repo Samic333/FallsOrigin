@@ -17,3 +17,15 @@ RewriteRule ^includes/.*$ - [F,L]
 
 # Custom Error Pages
 ErrorDocument 404 /index.php
+
+# Additional Protections
+<FilesMatch "^(config\.php|db\.php|schema\.sql|.*\.md|.*\.log)$">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

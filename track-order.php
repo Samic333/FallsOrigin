@@ -3,17 +3,24 @@ $pageTitle = 'Track Order';
 require_once __DIR__ . '/includes/header.php';
 
 $token = $_GET['token'] ?? null;
+$order_number = $_GET['order_number'] ?? null;
+$email = $_GET['email'] ?? null;
 $order = null;
 
 if ($token) {
     $db = DB::getInstance();
-    $stmt = $db->prepare("SELECT * FROM orders WHERE id = ?");
-    $stmt->execute([$token]);
+    $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? OR tracking_token = ?");
+    $stmt->execute([$token, $token]);
+    $order = $stmt->fetch();
+} elseif ($order_number && $email) {
+    $db = DB::getInstance();
+    $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? AND email = ?");
+    $stmt->execute([$order_number, $email]);
     $order = $stmt->fetch();
 }
 ?>
 
-<div class="pt-8 md:pt-12 pb-24 bg-[#050505] min-h-screen">
+<div class="py-12 md:py-16 bg-[#050505] min-h-screen">
     <div class="max-w-4xl mx-auto px-6">
         <div class="page-header mb-16 text-center">
             <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('transactional_transparency'); ?></h2>
@@ -22,12 +29,22 @@ if ($token) {
 
         <div class="bg-[#0a0a0a] border border-white/5 p-12 rounded-[3.5rem] shadow-2xl">
             <?php if (!$order): ?>
-                <form action="track-order.php" method="GET" class="space-y-8">
+                <form action="track-order.php" method="GET" class="space-y-4 mb-8 pb-8 border-b border-white/5">
                     <div>
-                        <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-4 ml-2"><?php echo __('verification_token'); ?></label>
-                        <input type="text" name="token" required placeholder="FOC-XXXXXXXXXXXX" class="w-full bg-white/[0.02] border border-white/5 p-6 rounded-2xl text-white text-sm font-mono tracking-widest focus:outline-none focus:border-amber-600 transition-all uppercase">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-4 ml-2">Secure Order Number</label>
+                        <input type="text" name="order_number" required placeholder="ORD-202X-XXXXXX" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs font-mono tracking-widest focus:border-amber-600 outline-none uppercase transition-all mb-4">
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-4 ml-2">Email Address</label>
+                        <input type="email" name="email" required placeholder="your.email@example.com" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs font-mono tracking-widest focus:border-amber-600 outline-none transition-all">
                     </div>
-                    <button type="submit" class="btn btn-gold w-full py-6 uppercase text-[11px] tracking-[0.4em]"><?php echo __('retrieve_ledger'); ?></button>
+                    <button type="submit" class="btn btn-gold w-full py-4 uppercase text-[10px] tracking-[0.4em] mt-4">Lookup via Email</button>
+                </form>
+
+                <form action="track-order.php" method="GET" class="space-y-4">
+                    <div>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/20 block mb-4 ml-2">Or Use Verification Token</label>
+                        <input type="text" name="token" required placeholder="FOC-XXXXXXXXXXXX" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs font-mono tracking-widest focus:border-amber-600 outline-none transition-all uppercase">
+                    </div>
+                    <button type="submit" class="btn border border-white/10 text-white/40 hover:text-white w-full py-4 uppercase text-[10px] tracking-[0.4em]">Retrieve by Token</button>
                     <p class="text-[9px] text-white/30 mt-6 text-center uppercase tracking-[0.2em]"><?php echo __('check_email_token'); ?></p>
                 </form>
             <?php else: ?>
@@ -49,8 +66,12 @@ if ($token) {
                                 <p class="text-sm font-bold uppercase tracking-widest text-white"><?php echo $order['delivery_method']; ?></p>
                                 <?php if ($order['tracking_number']): ?>
                                     <p class="text-[11px] font-mono text-amber-600 uppercase tracking-widest">Tracking: <?php echo e($order['tracking_number']); ?></p>
+                                    <?php if (!empty($order['carrier'])): ?>
+                                        <p class="text-[10px] text-white/50 uppercase tracking-widest font-bold">Carrier: <?php echo e($order['carrier']); ?></p>
+                                        <a href="https://www.google.com/search?q=<?php echo urlencode($order['carrier'] . ' tracking ' . $order['tracking_number']); ?>" target="_blank" class="inline-block mt-2 text-[9px] font-black uppercase tracking-widest text-amber-600 hover:text-white transition-colors">Carrier Status &rarr;</a>
+                                    <?php endif; ?>
                                 <?php endif; ?>
-                                <p class="text-[10px] text-white/50 uppercase tracking-widest font-bold"><?php echo __('est_arrival'); ?>: <?php echo $order['eta'] ?: 'PENDING'; ?></p>
+                                <p class="text-[10px] text-white/30 uppercase tracking-widest font-bold mt-4"><?php echo __('est_arrival'); ?>: <?php echo $order['eta'] ?: 'PENDING'; ?></p>
                             </div>
                         </div>
                         <div class="text-right">

@@ -62,16 +62,16 @@ $featuredProduct = $products[0] ?? null;
                     </div>
                     <h3 class="product-name font-serif" style="margin-bottom: 0.25rem;"><?php echo htmlspecialchars($product['name']); ?></h3>
                     <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>
-                    <?php if (isset($product['stock_quantity']) && $product['stock_quantity'] <= 0): ?>
-                        <div style="margin-top: 1rem;">
-                            <button class="btn" style="width: 100%; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; min-height: 48px;" disabled>Out of Stock</button>
-                        </div>
-                    <?php else: ?>
-                        <div style="margin-top: 1rem; position: relative; z-index: 10;">
-                            <button onclick="addToCart(event, <?php echo $product['id']; ?>)" class="btn btn-gold" style="width: 100%; min-height: 48px; position: relative; cursor: pointer;"><?php echo __('add_to_cart'); ?></button>
-                        </div>
-                    <?php endif; ?>
                 </a>
+                <?php if (isset($product['stock_quantity']) && $product['stock_quantity'] <= 0): ?>
+                    <div style="margin-top: 1rem;">
+                        <button class="btn" style="width: 100%; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; min-height: 48px;" disabled>Out of Stock</button>
+                    </div>
+                <?php else: ?>
+                    <div style="margin-top: 1rem; position: relative; z-index: 10;">
+                        <button onclick="addToCart(event, <?php echo $product['id']; ?>)" class="btn btn-gold" style="width: 100%; min-height: 48px; position: relative; cursor: pointer;"><?php echo __('add_to_cart'); ?></button>
+                    </div>
+                <?php endif; ?>
             </div>
             <?php endforeach; ?>
         </div>

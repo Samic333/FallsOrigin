@@ -49,6 +49,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
             <a href="reviews.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'reviews.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
                 Testimonials
             </a>
+            <a href="admins.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'admins.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
+                Identity Mgt
+            </a>
             <a href="settings.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'settings.php' ? 'bg-amber-600 text-white' : 'text-white/40 hover:bg-white/5 hover:text-white'; ?>">
                 System Matrix
             </a>

@@ -5,10 +5,10 @@ require_once __DIR__ . '/includes/header.php';
 $db = DB::getInstance();
 $category = $_GET['category'] ?? 'all';
 
-$query = "SELECT * FROM products";
+$query = "SELECT * FROM products WHERE is_active = 1";
 $params = [];
 if ($category !== 'all') {
-    $query .= " WHERE type = ?";
+    $query .= " AND category_id = ?";
     $params[] = $category;
 }
 $stmt = $db->prepare($query);
@@ -16,11 +16,28 @@ $stmt->execute($params);
 $products = $stmt->fetchAll();
 ?>
 
-<div class="pt-32 pb-24 bg-[#050505] min-h-screen">
+<div class="py-12 md:py-16 bg-[#050505] min-h-screen">
     <div class="max-w-7xl mx-auto px-6">
         <div class="page-header mb-20 text-center">
             <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-4 italic"><?php echo __('provenance'); ?></h2>
             <h1 class="text-6xl font-serif font-bold text-white uppercase tracking-tighter"><?php echo __('micro_lot_selection'); ?></h1>
+        </div>
+
+        <!-- Category Filter -->
+        <div class="flex flex-wrap gap-4 justify-center mb-16">
+            <a href="shop.php" class="px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 <?php echo $category === 'all' ? 'bg-amber-600 text-white border-amber-600' : 'text-white/40 hover:text-white hover:border-white/30'; ?> transition-all">All Selection</a>
+            <?php 
+            try {
+                $categories = $db->query("SELECT * FROM categories")->fetchAll();
+                foreach ($categories as $cat): 
+            ?>
+                <a href="shop.php?category=<?php echo $cat['id']; ?>" class="px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/10 <?php echo $category == $cat['id'] ? 'bg-amber-600 text-white border-amber-600' : 'text-white/40 hover:text-white hover:border-white/30'; ?> transition-all">
+                    <?php echo htmlspecialchars($cat['name']); ?>
+                </a>
+            <?php 
+                endforeach; 
+            } catch (Exception $e) {} 
+            ?>
         </div>
 
         <!-- Product Grid -->

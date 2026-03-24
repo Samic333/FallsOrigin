@@ -17,6 +17,10 @@ if (isset($_GET['id'])) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
+        die('CSRF token validation failed.');
+    }
+    
     $name = $_POST['name'] ?? '';
     $origin = $_POST['origin'] ?? '';
     $price = $_POST['price'] ?? 0;
@@ -25,6 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stock_quantity = $_POST['stock_quantity'] ?? 0;
     $is_active = isset($_POST['is_active']) ? 1 : 0;
     $id = $_POST['id'] ?? null;
+    
+    $tasting_notes = $_POST['tasting_notes'] ?? '';
+    $brewing_suggestions = $_POST['brewing_suggestions'] ?? '';
+    $origin_story = $_POST['origin_story'] ?? '';
+    $category_id = empty($_POST['category_id']) ? null : $_POST['category_id'];
     
     // Handle image upload
     $image_url = $product['image_url'] ?? 'assets/img/product_front.png';
@@ -40,15 +49,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (empty($error)) {
-        if ($id) {
-            $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, is_active=? WHERE id=?");
-            $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $id]);
-            $success = "Product updated successfully.";
-        } else {
-            $stmt = $db->prepare("INSERT INTO products (name, origin, price, weight, description, image_url, stock_quantity, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active]);
-            $id = $db->lastInsertId();
-            $success = "Product created successfully.";
+        try {
+            if ($id) {
+                $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, is_active=?, category_id=?, tasting_notes=?, brewing_suggestions=?, origin_story=? WHERE id=?");
+                $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $category_id, $tasting_notes, $brewing_suggestions, $origin_story, $id]);
+                $success = "Product updated successfully.";
+            } else {
+                // simple slug generator
+                $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
+                $stmt = $db->prepare("INSERT INTO products (slug, name, origin, price, weight, description, image_url, stock_quantity, is_active, category_id, tasting_notes, brewing_suggestions, origin_story) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$slug, $name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $category_id, $tasting_notes, $brewing_suggestions, $origin_story]);
+                $id = $db->lastInsertId();
+                $success = "Product created successfully.";
+            }
+        } catch(PDOException $e) {
+            // Check if missing column in mock/DB schema:
+            $error = "Legacy schema detected. " . $e->getMessage();
+            try {
+                if ($id) {
+                    $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, tasting_notes=?, brewing_suggestions=?, origin_story=? WHERE id=?");
+                    $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $tasting_notes, $brewing_suggestions, $origin_story, $id]);
+                    $success = "Product updated (legacy fallback).";
+                    $error = "";
+                }
+            } catch(PDOException $e2) {
+                // final fallback
+            }
         }
         
         // Refresh product data
@@ -56,6 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->execute([$id]);
         $product = $stmt->fetch();
     }
+}
+
+// Fetch categories
+try {
+    $categories = $db->query("SELECT * FROM categories")->fetchAll();
+} catch (PDOException $e) {
+    $categories = []; // Schema may not be migrated yet
 }
 ?>
 
@@ -79,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php endif; ?>
 
         <form action="product-edit.php<?php echo $product ? '?id='.$product['id'] : ''; ?>" method="POST" enctype="multipart/form-data" class="space-y-8">
+            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
             <?php if ($product): ?>
                 <input type="hidden" name="id" value="<?php echo $product['id']; ?>">
             <?php endif; ?>
@@ -94,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </div>
 
-            <div class="grid grid-cols-3 gap-8">
+            <div class="grid grid-cols-4 gap-8">
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Price (CAD)</label>
                     <input type="number" step="0.01" name="price" required value="<?php echo htmlspecialchars($product['price'] ?? '0.00'); ?>" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none font-serif focus:border-amber-600">
@@ -104,14 +138,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="text" name="weight" required value="<?php echo htmlspecialchars($product['weight'] ?? '340g'); ?>" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600">
                 </div>
                 <div>
-                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Stock Quantity</label>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Stock</label>
                     <input type="number" name="stock_quantity" required value="<?php echo htmlspecialchars($product['stock_quantity'] ?? '0'); ?>" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600">
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Category</label>
+                    <select name="category_id" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600 appearance-none">
+                        <option value="">No Category</option>
+                        <?php foreach ($categories as $cat): ?>
+                            <option value="<?php echo $cat['id']; ?>" <?php echo (($product['category_id'] ?? '') == $cat['id']) ? 'selected' : ''; ?>><?php echo htmlspecialchars($cat['name']); ?></option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </div>
 
-            <div>
-                <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Description</label>
-                <textarea name="description" rows="4" required class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600 no-scrollbar"><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
+            <div class="space-y-6">
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Main Description</label>
+                    <textarea name="description" rows="3" required class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600 no-scrollbar"><?php echo htmlspecialchars($product['description'] ?? ''); ?></textarea>
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Tasting Notes (comma separated)</label>
+                    <input type="text" name="tasting_notes" value="<?php echo htmlspecialchars($product['tasting_notes'] ?? ''); ?>" placeholder="Cherry, Dark Chocolate, Almond" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600">
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Brewing Suggestions</label>
+                    <input type="text" name="brewing_suggestions" value="<?php echo htmlspecialchars($product['brewing_suggestions'] ?? ''); ?>" placeholder="V60, Aeropress" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600">
+                </div>
+                <div>
+                    <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-3">Origin Story</label>
+                    <textarea name="origin_story" rows="3" class="w-full bg-white/[0.02] border border-white/5 p-4 rounded-xl text-white text-xs outline-none focus:border-amber-600 no-scrollbar"><?php echo htmlspecialchars($product['origin_story'] ?? ''); ?></textarea>
+                </div>
             </div>
 
             <div class="p-6 bg-white/[0.01] border border-white/5 rounded-2xl">
@@ -126,7 +183,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             
             <div class="flex items-center gap-4">
-                <input type="checkbox" name="is_active" id="is_active" <?php echo (!isset($product) || $product['is_active']) ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
+                <?php 
+                $isActive = true; 
+                if (isset($product)) {
+                    if (array_key_exists('is_active', $product)) {
+                        $isActive = (bool)$product['is_active'];
+                    } elseif (array_key_exists('active', $product)) {
+                        $isActive = (bool)$product['active'];
+                    }
+                }
+                ?>
+                <input type="checkbox" name="is_active" id="is_active" <?php echo $isActive ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
                 <label for="is_active" class="text-[10px] font-black uppercase tracking-widest text-white/80 cursor-pointer">Product is Active</label>
             </div>
 
