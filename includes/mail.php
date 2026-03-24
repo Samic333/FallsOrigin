@@ -23,14 +23,17 @@ function send_review_request($order) {
 
 function send_customer_email($to_email, $subject, $body) {
     if (!defined('ADMIN_EMAIL')) {
-        define('ADMIN_EMAIL', 'admin@fallscoffee.ca');
+        define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
     }
     
-    // Linux-friendly baseline (LF only)
-    $headers = "From: " . ADMIN_EMAIL . "\n";
-    $headers .= "Reply-To: " . ADMIN_EMAIL . "\n";
+    // Phase 22 headers (Proven working on Namecheap)
+    $headers = "From: " . ADMIN_EMAIL . "\r\n";
+    $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
     
-    return mail($to_email, $subject, $body, $headers);
+    // The -f flag sets the 'Return-Path' and is mandatory on many Namecheap servers
+    return mail($to_email, $subject, $body, $headers, "-f" . ADMIN_EMAIL);
 }
 ?>
