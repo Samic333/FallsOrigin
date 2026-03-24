@@ -16,10 +16,21 @@ if (!$check->fetch()) {
        ->execute(['hero_image', 'assets/img/hero-coffee.png']);
 }
 
+// Ensure opacity settings exist
+$keys = ['hero_opacity' => '0.95', 'hero_overlay_strength' => '0.6'];
+foreach ($keys as $k => $v) {
+    $c = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = ?");
+    $c->execute([$k]);
+    if (!$c->fetch()) {
+        $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)")->execute([$k, $v]);
+    }
+}
+
 // Handle Settings Update
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'update_hero') {
+        // Handle Image
         if (!empty($_FILES['hero_image']['name'])) {
             $targetDir = "../assets/img/";
             $fileName = "hero-coffee-" . time() . "." . pathinfo($_FILES["hero_image"]["name"], PATHINFO_EXTENSION);
@@ -29,15 +40,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_image'")
                    ->execute(['assets/img/' . $fileName]);
                 log_admin_action("Update Hero Image", "Changed hero asset to $fileName");
-                $message = "Hero image updated successfully.";
             }
         }
+        
+        // Handle Opacity/Overlay
+        $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_opacity'")->execute([$_POST['hero_opacity']]);
+        $db->prepare("UPDATE settings SET setting_value = ? WHERE setting_key = 'hero_overlay_strength'")->execute([$_POST['hero_overlay_strength']]);
+        $message = "Atmospheric settings updated successfully.";
     }
 }
 
 $logs = $db->query("SELECT * FROM admin_audit_logs ORDER BY created_at DESC LIMIT 50")->fetchAll();
 $admins = $db->query("SELECT * FROM admin_users")->fetchAll();
-$heroImg = $db->query("SELECT setting_value FROM settings WHERE setting_key = 'hero_image'")->fetchColumn() ?: 'assets/img/hero-coffee.png';
+
+$settings_data = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
+$heroImg = $settings_data['hero_image'] ?? 'assets/img/hero-coffee.png';
+$heroOpacity = $settings_data['hero_opacity'] ?? '0.95';
+$heroOverlayStr = $settings_data['hero_overlay_strength'] ?? '0.6';
 ?>
 
 <?php if ($message): ?>
@@ -58,7 +77,17 @@ $heroImg = $db->query("SELECT setting_value FROM settings WHERE setting_key = 'h
                 <input type="hidden" name="action" value="update_hero">
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Select New Atmosphere Asset</label>
-                    <input type="file" name="hero_image" required class="block w-full text-[10px] text-white/40 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-amber-600/10 file:text-amber-500 hover:file:bg-amber-600/20 transition-all">
+                    <input type="file" name="hero_image" class="block w-full text-[10px] text-white/40 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-amber-600/10 file:text-amber-500 hover:file:bg-amber-600/20 transition-all">
+                </div>
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Image Opacity (0.1 - 1.0)</label>
+                        <input type="number" step="0.05" min="0" max="1" name="hero_opacity" value="<?php echo e($heroOpacity); ?>" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-xs">
+                    </div>
+                    <div>
+                        <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Overlay Density (0.1 - 1.0)</label>
+                        <input type="number" step="0.05" min="0" max="1" name="hero_overlay_strength" value="<?php echo e($heroOverlayStr); ?>" class="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white text-xs">
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-gold w-full py-6 uppercase text-[10px] tracking-[0.4em]">Apply Visual Change</button>
             </form>

@@ -7,13 +7,13 @@ $db = DB::getInstance();
 $stmt = $db->query("SELECT * FROM products WHERE is_active = 1 ORDER BY is_featured DESC, created_at DESC LIMIT 3");
 $products = $stmt->fetchAll();
 
-$featuredProduct = $products[0] ?? null;
+$heroImg = $db->query("SELECT setting_value FROM settings WHERE setting_key = 'hero_image'")->fetchColumn() ?: 'assets/img/hero-coffee.png';
 ?>
 
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="hero-bg-container">
-        <img src="assets/img/hero-coffee.png" alt="Falls Origin Heritage" class="hero-master-img">
+        <img src="<?php echo e($heroImg); ?>?v=<?php echo time(); ?>" alt="Falls Origin Heritage" class="hero-master-img">
         <div class="hero-overlay"></div>
     </div>
     
