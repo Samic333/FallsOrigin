@@ -7,16 +7,25 @@ $db = DB::getInstance();
 $stmt = $db->query("SELECT * FROM products WHERE is_active = 1 ORDER BY is_featured DESC, created_at DESC LIMIT 3");
 $products = $stmt->fetchAll();
 
-$settings = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
+$settings = [];
+try {
+    $settings = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
+} catch (PDOException $e) {
+    // Falls back to defaults if table doesn't exist yet
+}
+
 $heroImg = $settings['hero_image'] ?? 'assets/img/hero-coffee.png';
 $heroOpacity = $settings['hero_opacity'] ?? '0.95';
 $heroOverlayStr = $settings['hero_overlay_strength'] ?? '0.6';
+
+// Asset versioning based on file modified time
+$asset_v = file_exists(__DIR__ . '/' . $heroImg) ? filemtime(__DIR__ . '/' . $heroImg) : time();
 ?>
 
 <!-- Hero Section -->
 <section class="hero-section">
     <div class="hero-bg-container">
-        <img src="<?php echo e($heroImg); ?>?v=<?php echo time(); ?>" alt="Falls Origin Heritage" class="hero-master-img" style="opacity: <?php echo $heroOpacity; ?>;">
+        <img src="<?php echo e($heroImg); ?>?v=<?php echo $asset_v; ?>" alt="Falls Origin Heritage" class="hero-master-img" style="opacity: <?php echo $heroOpacity; ?>;">
         <div class="hero-overlay" style="background: linear-gradient(to right, #0B0F14 20%, rgba(11, 15, 20, <?php echo $heroOverlayStr; ?>) 50%, transparent 100%);"></div>
     </div>
     

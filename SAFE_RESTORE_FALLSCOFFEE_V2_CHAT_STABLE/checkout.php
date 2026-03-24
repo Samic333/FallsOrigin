@@ -12,9 +12,14 @@ $cartItems = [];
 $subtotal = 0;
 $ids = array_keys($_SESSION['cart']);
 $placeholders = implode(',', array_fill(0, count($ids), '?'));
-$stmt = $db->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
-$stmt->execute($ids);
-$products = $stmt->fetchAll();
+$products = [];
+try {
+    $stmt = $db->prepare("SELECT * FROM products WHERE id IN ($placeholders)");
+    $stmt->execute($ids);
+    $products = $stmt->fetchAll();
+} catch (PDOException $e) {
+    // Falls back to empty if table is missing or query fails
+}
 
 foreach ($products as $p) {
     if (!isset($_SESSION['cart'][$p['id']])) continue;
