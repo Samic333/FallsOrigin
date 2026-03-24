@@ -3,46 +3,17 @@ $pageTitle = 'Home';
 require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
+// Fetch 3 featured products for the collection section
+$stmt = $db->query("SELECT * FROM products LIMIT 3");
+$products = $stmt->fetchAll();
 
-// Approved Demo Fallback Data
-$defaultProducts = [
-    [
-        'id' => 1,
-        'name' => 'Yirgacheffe',
-        'price' => 19.99,
-        'description' => 'Bright, floral, and complex notes with hints of jasmine and citrus.',
-        'image_url' => 'assets/img/yirgacheffe.png',
-        'stock_quantity' => 10
-    ],
-    [
-        'id' => 2,
-        'name' => 'Sidamo',
-        'price' => 19.99,
-        'description' => 'Deep berry notes with a smooth chocolate finish and medium body.',
-        'image_url' => 'assets/img/sidamo.png',
-        'stock_quantity' => 10
-    ],
-    [
-        'id' => 3,
-        'name' => 'Guji',
-        'price' => 19.99,
-        'description' => 'Sweet citrus and balanced acidity with a complex jasmine aroma.',
-        'image_url' => 'assets/img/guji.png',
-        'stock_quantity' => 10
-    ]
-];
-
-// Fetch active products from DB
-try {
-    $stmt = $db->query("SELECT * FROM products WHERE is_active = 1 LIMIT 3");
-    $products = $stmt->fetchAll();
-} catch (Exception $e) {
-    $products = [];
-}
-
-// If DB is empty or unreachable, use the approved demo products
+// Mock data for preview if database is empty
 if (empty($products)) {
-    $products = $defaultProducts;
+    $products = [
+        ['id' => 1, 'name' => 'Yirgacheffe', 'price' => 19.99, 'description' => 'Bright, floral, and complex notes.'],
+        ['id' => 2, 'name' => 'Sidamo', 'price' => 19.99, 'description' => 'Deep berry notes with a smooth finish.'],
+        ['id' => 3, 'name' => 'Guji', 'price' => 19.99, 'description' => 'Sweet citrus and balanced acidity.']
+    ];
 }
 
 $featuredProduct = $products[0] ?? null;
@@ -76,13 +47,18 @@ $featuredProduct = $products[0] ?? null;
         <h2 class="section-title font-serif" style="text-transform: none; letter-spacing: -0.02em;"><?php echo __('our_collection'); ?></h2>
         <div class="collection-grid">
             <?php 
+            $imageMap = [
+                'Yirgacheffe' => 'yirgacheffe.png',
+                'Sidamo' => 'sidamo.png',
+                'Guji' => 'guji.png'
+            ];
             foreach ($products as $product): 
-                $imgUrl = !empty($product['image_url']) ? $product['image_url'] : 'assets/img/product_front.png';
+                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
             ?>
             <div class="product-card">
                 <a href="product.php?id=<?php echo $product['id']; ?>" style="text-decoration: none; color: inherit;">
                     <div class="product-image-container" style="margin-bottom: 2rem; overflow: hidden; border-radius: 4px;">
-                        <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; height: auto; display: block; transition: var(--transition);">
+                        <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; height: auto; display: block; transition: var(--transition);">
                     </div>
                     <h3 class="product-name font-serif" style="margin-bottom: 0.25rem;"><?php echo htmlspecialchars($product['name']); ?></h3>
                     <p class="product-price">$<?php echo number_format($product['price'], 2); ?></p>

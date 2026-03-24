@@ -4,63 +4,9 @@ require_once __DIR__ . '/includes/db.php';
 
 $id = $_GET['id'] ?? null;
 $db = DB::getInstance();
-$product = null;
-
-// Approved Demo Fallback Data
-$defaultProducts = [
-    1 => [
-        'id' => 1,
-        'name' => 'Yirgacheffe',
-        'origin' => 'Ethiopia',
-        'price' => 19.99,
-        'weight' => '340g',
-        'description' => 'Bright, floral, and complex notes. Hints of jasmine and citrus.',
-        'image_url' => 'assets/img/yirgacheffe.png',
-        'tasting_notes' => 'Jasmine, Bergamot, Blueberry',
-        'brewing_suggestions' => 'Pour over (V60), 1:15 ratio, 93°C water',
-        'origin_story' => 'Grown in the high altitudes of the Yirgacheffe region, these heirloom varietals are hand-picked by local farmers.',
-        'stock_quantity' => 10
-    ],
-    2 => [
-        'id' => 2,
-        'name' => 'Sidamo',
-        'origin' => 'Ethiopia',
-        'price' => 19.99,
-        'weight' => '340g',
-        'description' => 'Deep berry notes with a smooth chocolate finish.',
-        'image_url' => 'assets/img/sidamo.png',
-        'tasting_notes' => 'Dark Chocolate, Blackberry, Maple',
-        'brewing_suggestions' => 'French Press or Espresso',
-        'origin_story' => 'From the Guji zone of Sidamo, naturally processed and sun-dried on raised beds.',
-        'stock_quantity' => 10
-    ],
-    3 => [
-        'id' => 3,
-        'name' => 'Guji',
-        'origin' => 'Ethiopia',
-        'price' => 19.99,
-        'weight' => '340g',
-        'description' => 'Sweet citrus and balanced acidity. Complex jasmine aroma.',
-        'image_url' => 'assets/img/guji.png',
-        'tasting_notes' => 'Peach, Honey, Jasmine',
-        'brewing_suggestions' => 'Chemex, 1:16 ratio',
-        'origin_story' => 'Direct trade from a micro-lot in the Guji region, known for its exceptional sweetness.',
-        'stock_quantity' => 10
-    ]
-];
-
-try {
-    $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
-    $stmt->execute([$id]);
-    $product = $stmt->fetch();
-} catch (Exception $e) {
-    // DB error
-}
-
-// Fallback if not in DB
-if (!$product && isset($defaultProducts[$id])) {
-    $product = $defaultProducts[$id];
-}
+$stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
+$stmt->execute([$id]);
+$product = $stmt->fetch();
 
 if (!$product) { header('Location: shop.php'); exit; }
 
@@ -77,10 +23,15 @@ $reviews = $reviewsStmt->fetchAll();
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
             <!-- Product Vis -->
             <?php 
-                $imgUrl = !empty($product['image_url']) ? $product['image_url'] : 'assets/img/product_front.png';
+                $imageMap = [
+                    'Yirgacheffe' => 'yirgacheffe.png',
+                    'Sidamo' => 'sidamo.png',
+                    'Guji' => 'guji.png'
+                ];
+                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
             ?>
             <div class="bg-[#0a0a0a] border border-white/5 rounded-[4rem] p-16 flex items-center justify-center sticky top-32 h-[75vh] shadow-2xl">
-                <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="max-w-[85%] max-h-full object-contain" style="image-rendering: -webkit-optimize-contrast;">
+                <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="max-w-[85%] max-h-full object-contain" style="image-rendering: -webkit-optimize-contrast;">
             </div>
 
             <!-- Product Data -->

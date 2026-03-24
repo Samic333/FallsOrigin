@@ -18,6 +18,26 @@ CREATE TABLE IF NOT EXISTS `admin_users` (
   UNIQUE KEY `username` (`username`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+-- Products Registry
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `description` text,
+  `tasting_notes` text,
+  `brewing_suggestions` text,
+  `origin_story` text,
+  `price` decimal(10,2) NOT NULL,
+  `type` varchar(50) DEFAULT 'Single Origin',
+  `origin` varchar(100) DEFAULT NULL,
+  `weight` varchar(20) DEFAULT '340g',
+  `image_url` varchar(255) DEFAULT NULL,
+  `roast_intensity` int DEFAULT 3,
+  `stock_quantity` int DEFAULT 0,
+  `active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- Orders Master
 CREATE TABLE IF NOT EXISTS `orders` (
   `id` varchar(50) NOT NULL,
@@ -78,7 +98,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `tasting_notes` text DEFAULT NULL,
   `brewing_suggestions` text DEFAULT NULL,
   `origin_story` text DEFAULT NULL,
-  `is_active` tinyint(1) NOT NULL DEFAULT 1,
+  `is_active` tinyint(1) DEFAULT 1,
   `category_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   FOREIGN KEY (`category_id`) REFERENCES `categories`(`id`) ON DELETE SET NULL

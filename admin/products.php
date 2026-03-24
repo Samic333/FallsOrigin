@@ -14,28 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $msg = "Product deleted.";
     }
 }
-if (!$db->isConnected()) {
-    $msg = "Database connection unavailable. Please check includes/config.php.";
-    $products = [];
-} else {
-    try {
-        $category = $_GET['category'] ?? 'all';
-        $query = "SELECT * FROM products";
-        $params = [];
-        if ($category !== 'all') {
-            $query .= " WHERE category_id = ?";
-            $params[] = $category;
-        }
-        $query .= " ORDER BY id ASC";
-
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        $products = $stmt->fetchAll();
-    } catch (Exception $e) {
-        $msg = "Error: " . $e->getMessage();
-        $products = [];
-    }
+$category = $_GET['category'] ?? 'all';
+$query = "SELECT * FROM products";
+$params = [];
+if ($category !== 'all') {
+    $query .= " WHERE category_id = ?";
+    $params[] = $category;
 }
+$query .= " ORDER BY id ASC";
+
+$stmt = $db->prepare($query);
+$stmt->execute($params);
+$products = $stmt->fetchAll();
 ?>
 
 <div class="bg-[#0a0a0a] border border-white/5 rounded-[3rem] overflow-hidden mb-12">

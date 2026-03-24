@@ -7,20 +7,12 @@ $product = null;
 $error = '';
 $success = '';
 
-if (!$db->isConnected()) {
-    $error = "Database connection unavailable. Please check includes/config.php. Changes cannot be saved.";
-}
-
-if (isset($_GET['id']) && $db->isConnected()) {
-    try {
-        $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
-        $stmt->execute([$_GET['id']]);
-        $product = $stmt->fetch();
-        if (!$product) {
-            die("Product not found.");
-        }
-    } catch (Exception $e) {
-        $error = "Failed to load product: " . $e->getMessage();
+if (isset($_GET['id'])) {
+    $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
+    $stmt->execute([$_GET['id']]);
+    $product = $stmt->fetch();
+    if (!$product) {
+        die("Product not found.");
     }
 }
 
@@ -46,16 +38,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle image upload
     $image_url = $product['image_url'] ?? 'assets/img/product_front.png';
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../uploads/products/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
-        $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9.\-_]/', '', basename($_FILES['image']['name']));
+        $uploadDir = __DIR__ . '/../assets/img/';
+        $fileName = time() . '_' . basename($_FILES['image']['name']);
         $targetPath = $uploadDir . $fileName;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-            $image_url = 'uploads/products/' . $fileName;
+            $image_url = 'assets/img/' . $fileName;
         } else {
-            $error = 'Failed to upload image. Please check directory permissions.';
+            $error = 'Failed to upload image.';
         }
     }
 
@@ -194,17 +183,7 @@ try {
             </div>
             
             <div class="flex items-center gap-4">
-                <?php 
-                $isActive = true; 
-                if (isset($product)) {
-                    if (array_key_exists('is_active', $product)) {
-                        $isActive = (bool)$product['is_active'];
-                    } elseif (array_key_exists('active', $product)) {
-                        $isActive = (bool)$product['active'];
-                    }
-                }
-                ?>
-                <input type="checkbox" name="is_active" id="is_active" <?php echo $isActive ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
+                <input type="checkbox" name="is_active" id="is_active" <?php echo (!isset($product) || isset($product['is_active']) && $product['is_active']) ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
                 <label for="is_active" class="text-[10px] font-black uppercase tracking-widest text-white/80 cursor-pointer">Product is Active</label>
             </div>
 
