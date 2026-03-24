@@ -169,7 +169,10 @@ try {
                     <?php if (isset($product['image_url'])): ?>
                         <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" class="w-24 h-24 object-cover rounded-lg border border-white/10 bg-black">
                     <?php endif; ?>
-                    <input type="file" name="image" accept="image/*" class="text-xs text-white/50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-white/5 file:text-white hover:file:bg-white/10 cursor-pointer">
+                <input type="file" name="image" accept="image/*" class="text-xs text-white/50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-white/5 file:text-white hover:file:bg-white/10 cursor-pointer">
+                <div class="mt-6 p-4 bg-amber-500/5 border border-amber-500/10 rounded-xl">
+                    <p class="text-[9px] font-black uppercase tracking-[0.2em] text-amber-500/60 mb-1">Architect's Note: Performance Optimization</p>
+                    <p class="text-[10px] text-white/40 leading-relaxed font-bold">Best result: <span class="text-white/60 text-xs">SQUARE (800x800)</span>. Keep file size <span class="text-white/60 text-xs">UNDER 100KB</span> for lightning-fast catalog loading.</p>
                 </div>
                 <p class="text-[10px] uppercase font-bold tracking-widest text-white/30 mt-4">Leave empty to keep current image.</p>
             </div>

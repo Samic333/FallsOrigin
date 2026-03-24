@@ -85,8 +85,12 @@ $heroOverlayStr = $settings_data['hero_overlay_strength'] ?? '0.6';
                 <input type="hidden" name="action" value="update_hero">
                 <div>
                     <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Select New Atmosphere Asset</label>
-                    <input type="file" name="hero_image" class="block w-full text-[10px] text-white/40 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:bg-amber-600/10 file:text-amber-500 hover:file:bg-amber-600/20 transition-all">
+                    <input type="file" name="hero_image" accept="image/*" class="text-xs text-white/50 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:uppercase file:tracking-widest file:bg-white/5 file:text-white hover:file:bg-white/10 cursor-pointer">
+                <div class="mt-4 p-4 bg-amber-500/5 border border-amber-500/10 rounded-xl">
+                    <p class="text-[9px] font-black uppercase tracking-[0.2em] text-amber-500/60 mb-1">Visual Integrity Rule</p>
+                    <p class="text-[10px] text-white/40 font-bold">Best result: <span class="text-white/60 text-xs">LANDSCAPE (1920x1080)</span>. Keep file size <span class="text-white/60 text-xs">UNDER 200KB</span> to prevent page-load delays.</p>
                 </div>
+            </div>
                 <div class="grid grid-cols-2 gap-6">
                     <div>
                         <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4">Image Opacity (0.1 - 1.0)</label>
