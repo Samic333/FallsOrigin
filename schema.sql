@@ -60,16 +60,27 @@ INSERT IGNORE INTO `products` (`id`, `name`, `slug`, `origin`, `price`, `weight`
 -- Table: orders
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS `orders` (
-  `id` varchar(20) NOT NULL, -- e.g., ORD-2026-XXXX
+  `id` varchar(20) NOT NULL,
   `customer_name` varchar(150) NOT NULL,
-  `customer_email` varchar(150) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `customer_email` varchar(150) DEFAULT NULL, -- kept for compatibility
   `customer_phone` varchar(50) DEFAULT NULL,
-  `shipping_address` text NOT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `city` varchar(100) DEFAULT NULL,
+  `province` varchar(100) DEFAULT NULL,
+  `postal_code` varchar(20) DEFAULT NULL,
+  `shipping_address` text DEFAULT NULL, -- kept for compatibility
   `total` decimal(10,2) NOT NULL,
   `status` enum('New','Accepted','Processing','Shipped','Delivered','Cancelled') NOT NULL DEFAULT 'New',
   `payment_method` varchar(50) DEFAULT 'Card',
   `payment_status` enum('Pending','Paid','Failed','Refunded') NOT NULL DEFAULT 'Pending',
   `payment_intent_id` varchar(100) DEFAULT NULL,
+  `tracking_number` varchar(150) DEFAULT NULL,
+  `carrier` varchar(100) DEFAULT NULL,
+  `eta` varchar(100) DEFAULT NULL,
+  `delivery_signature` varchar(255) DEFAULT NULL,
+  `items` longtext DEFAULT NULL,
+  `review_email_sent` tinyint(1) NOT NULL DEFAULT 0,
   `notes` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
