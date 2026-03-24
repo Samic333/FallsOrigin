@@ -302,25 +302,35 @@ section {
         font-size: 2.2rem;
     }
     .hero-section {
-        min-height: 70vh;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         text-align: center;
-        padding-top: 100px;
+        padding-top: 80px;
     }
     .hero-bg-container {
-        position: relative;
-        height: 300px;
-        order: 2;
+        position: absolute !important;
+        inset: 0;
+        z-index: 1;
+        height: 100% !important;
+        width: 100% !important;
+        order: unset;
     }
     .hero-master-img {
-        object-position: center 20%;
+        object-position: 70% center; /* Focus on the product which is on the right */
     }
     .hero-overlay {
-        background: linear-gradient(to top, #0B0F14 20%, transparent 100%),
-                    linear-gradient(to bottom, #0B0F14 10%, transparent 40%);
+        background: radial-gradient(circle at center, rgba(11, 15, 20, 0.4) 0%, #0B0F14 90%);
+        z-index: 2;
     }
     .hero-layout-container {
+        position: relative;
+        z-index: 10;
+        display: flex;
         flex-direction: column;
-        order: 1;
+        align-items: center;
+        order: unset;
     }
     .hero-content {
         margin: 0 auto;
