@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $where = ($view === 'archived') ? "archived_at IS NOT NULL" : "archived_at IS NULL";
-$messages = $db->query("SELECT * FROM contact_messages WHERE $where AND deleted_at IS NULL ORDER BY created_at DESC")->fetchAll();
+$messages = $db->query("SELECT * FROM contact_messages WHERE $where AND direction = 'inbound' AND deleted_at IS NULL ORDER BY created_at DESC")->fetchAll();
 ?>
 
 <div class="max-w-5xl">
