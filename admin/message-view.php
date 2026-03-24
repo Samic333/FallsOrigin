@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Communication Detail';
+$pageTitle = 'Communication History';
 require_once __DIR__ . '/includes/header.php';
 require_once __DIR__ . '/../includes/mail.php';
 
@@ -8,21 +8,16 @@ $id = $_GET['id'] ?? null;
 
 if (!$id) { header('Location: messages.php'); exit; }
 
+// Get primary record to identify email/thread
 $stmt = $db->prepare("SELECT * FROM contact_messages WHERE id = ?");
 $stmt->execute([$id]);
-$msg = $stmt->fetch();
+$mainMsg = $stmt->fetch();
 
-if (!$msg) { header('Location: messages.php'); exit; }
+if (!$mainMsg) { header('Location: messages.php'); exit; }
 
-// Auto-mark as read when viewed
-if ($msg['status'] === 'Unread') {
-    $db->prepare("UPDATE contact_messages SET status = 'Read' WHERE id = ?")->execute([$id]);
-    $msg['status'] = 'Read';
-}
+$email = $mainMsg['email'];
 
-$info = '';
-$error = '';
-
+// Handle Actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!validate_csrf_token($_POST['csrf_token'] ?? '')) {
         die('CSRF token validation failed.');
@@ -30,39 +25,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['reply_body'])) {
         $reply = $_POST['reply_body'];
-        $subject = "Re: " . $msg['subject'];
+        $subject = "Re: " . $mainMsg['subject'];
         
-        if (send_customer_email($msg['email'], $subject, $reply)) {
-            $stmt = $db->prepare("UPDATE contact_messages SET status = 'Replied', reply_content = ?, replied_at = CURRENT_TIMESTAMP WHERE id = ?");
-            $stmt->execute([$reply, $id]);
-            log_admin_action('Reply Message', "Replied to inquiry #{$id}.");
-            $info = "Reply transmitted successfully.";
+        if (send_customer_email($email, $subject, $reply)) {
+            // 1. Log reply on the MAIN thread record for legacy/status
+            $db->prepare("UPDATE contact_messages SET status = 'Replied', reply_content = ?, replied_at = CURRENT_TIMESTAMP WHERE id = ?")
+               ->execute([$reply, $mainMsg['id']]);
             
-            $msg['status'] = 'Replied';
-            $msg['reply_content'] = $reply;
-            $msg['replied_at'] = date('Y-m-d H:i:s');
+            // 2. Insert as a NEW chat record for history
+            $db->prepare("INSERT INTO contact_messages (parent_id, name, email, subject, message, direction, status) VALUES (?, ?, ?, ?, ?, 'outbound', 'Replied')")
+               ->execute([$mainMsg['id'], 'Admin', $email, $subject, $reply]);
+            
+            log_admin_action('Reply Message', "Replied to inquiry #{$id}.");
+            header("Location: message-view.php?id=$id&info=Reply+transmitted"); exit;
         } else {
             $error = "Failed to dispatch email. Check SMTP configuration.";
         }
     }
 
+    // Lifecycle actions on the MAIN record
     if (isset($_POST['archive_msg'])) {
         $db->prepare("UPDATE contact_messages SET archived_at = CURRENT_TIMESTAMP WHERE id = ?")->execute([$id]);
-        header('Location: messages.php?info=Communication+archived'); exit;
+        header('Location: messages.php?info=Thread+archived'); exit;
     }
-
     if (isset($_POST['restore_msg'])) {
         $db->prepare("UPDATE contact_messages SET archived_at = NULL WHERE id = ?")->execute([$id]);
-        header('Location: message-view.php?id='.$id.'&info=Restored+to+active+registry'); exit;
+        header("Location: message-view.php?id=$id&info=Restored+to+active"); exit;
     }
-
     if (isset($_POST['delete_perm'])) {
-        $db->prepare("DELETE FROM contact_messages WHERE id = ?")->execute([$id]);
-        header('Location: messages.php?info=Record+purged'); exit;
+        $db->prepare("DELETE FROM contact_messages WHERE id = ? OR parent_id = ? OR email = ?")->execute([$id, $id, $email]);
+        header('Location: messages.php?info=Entire+conversation+purged'); exit;
     }
 }
 
-$info = $info ?: ($_GET['info'] ?? '');
+// Auto-mark as read
+if ($mainMsg['status'] === 'Unread') {
+    $db->prepare("UPDATE contact_messages SET status = 'Read' WHERE id = ?")->execute([$id]);
+    $mainMsg['status'] = 'Read';
+}
+
+// Fetch entire conversation thread for this email
+$history = $db->prepare("SELECT * FROM contact_messages WHERE email = ? AND deleted_at IS NULL ORDER BY created_at ASC");
+$history->execute([$email]);
+$messages = $history->fetchAll();
+
+$info = $_GET['info'] ?? '';
 ?>
 
 <div class="max-w-4xl">
@@ -72,7 +79,7 @@ $info = $info ?: ($_GET['info'] ?? '');
             <span>Return to Registry</span>
         </a>
         <div class="flex items-center gap-6">
-            <?php if (!$msg['archived_at']): ?>
+            <?php if (!$mainMsg['archived_at']): ?>
                 <form action="" method="POST">
                     <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
                     <button type="submit" name="archive_msg" class="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-amber-600 transition-colors">Archive</button>
@@ -83,82 +90,61 @@ $info = $info ?: ($_GET['info'] ?? '');
                     <button type="submit" name="restore_msg" class="text-[10px] font-black uppercase tracking-widest text-green-500/60 hover:text-green-500 transition-colors">Restore</button>
                 </form>
             <?php endif; ?>
-            <form action="" method="POST" onsubmit="return confirm('DANGER: This purged the record from the database. Proceed?');">
+            <form action="" method="POST" onsubmit="return confirm('DANGER: Purge ENTIRE history with this email?');">
                 <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
-                <button type="submit" name="delete_perm" class="text-[10px] font-black uppercase tracking-widest text-red-500/40 hover:text-red-500 transition-colors">Purge Permanently</button>
+                <button type="submit" name="delete_perm" class="text-[10px] font-black uppercase tracking-widest text-red-500/40 hover:text-red-500 transition-colors">Purge History</button>
             </form>
         </div>
     </div>
 
-    <div class="grid grid-cols-1 gap-12">
-        <!-- Original Message -->
-        <div class="bg-[#0a0a0a] border border-white/10 p-12 rounded-[3rem] shadow-xl">
-            <div class="flex justify-between items-start mb-10">
-                <div>
-                    <h2 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-2 italic">Incoming Frequency</h2>
-                    <h1 class="text-4xl font-serif font-bold text-white tracking-tighter"><?php echo e($msg['subject']); ?></h1>
-                </div>
-                <div class="text-right">
-                    <span class="text-[8px] font-black uppercase tracking-widest text-white/60 block mb-2 font-mono">Registry ID #<?php echo $msg['id']; ?></span>
-                    <span class="text-[10px] font-bold text-white/50 font-mono"><?php echo date('F d, Y @ H:i', strtotime($msg['created_at'])); ?></span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-2 gap-12 mb-12 py-8 border-y border-white/5">
-                <div>
-                    <p class="text-[8px] font-black uppercase tracking-widest text-white/40 mb-3 italic">Identity</p>
-                    <p class="text-white text-sm font-bold tracking-tight"><?php echo e($msg['name']); ?></p>
-                </div>
-                <div>
-                    <p class="text-[8px] font-black uppercase tracking-widest text-white/40 mb-3 italic">Electronic Mail</p>
-                    <p class="text-amber-600 text-sm font-bold tracking-tight"><?php echo e($msg['email']); ?></p>
-                </div>
-            </div>
-
-            <div class="mb-12">
-                <p class="text-white/80 text-lg leading-relaxed font-medium selection:bg-amber-600/30">
-                    <?php echo nl2br(e($msg['message'])); ?>
-                </p>
-            </div>
-        </div>
-
-        <!-- Reply Sector -->
-        <?php if($msg['status'] === 'Replied'): ?>
-            <div class="bg-amber-600/5 border border-amber-600/20 p-12 rounded-[3rem] shadow-inner">
-                <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-amber-600 mb-8 italic">Outgoing Response</h3>
-                <div class="mb-8">
-                    <p class="text-white text-lg leading-relaxed font-medium">
-                        <?php echo nl2br(e($msg['reply_content'])); ?>
+    <div class="space-y-12 mb-16">
+        <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 italic">Conversation Logs / <?php echo e($email); ?></h3>
+        
+        <?php foreach ($messages as $m): ?>
+            <?php $isOutbound = ($m['direction'] === 'outbound'); ?>
+            <div class="flex <?php echo $isOutbound ? 'justify-end' : 'justify-start'; ?>">
+                <div class="max-w-[85%] <?php echo $isOutbound ? 'bg-amber-600/10 border-amber-600/30' : 'bg-[#0a0a0a] border-white/10'; ?> border p-10 rounded-[2.5rem] shadow-xl relative">
+                    <div class="flex justify-between items-center mb-6">
+                        <span class="text-[8px] font-black uppercase tracking-widest <?php echo $isOutbound ? 'text-amber-500' : 'text-white/40'; ?>">
+                            <?php echo $isOutbound ? 'OUTGOING FREQUENCY' : 'INCOMING FREQUENCY'; ?>
+                        </span>
+                        <span class="text-[9px] font-mono text-white/30">
+                            <?php echo date('M d, H:i', strtotime($m['created_at'])); ?>
+                        </span>
+                    </div>
+                    <?php if (!$isOutbound && $m['subject'] !== $mainMsg['subject']): ?>
+                        <p class="text-[10px] font-bold text-white/60 mb-3 italic">Regarding: <?php echo e($m['subject']); ?></p>
+                    <?php endif; ?>
+                    <p class="text-white/90 text-lg leading-relaxed font-medium">
+                        <?php echo nl2br(e($m['message'])); ?>
                     </p>
                 </div>
-                <div class="text-[9px] font-black uppercase tracking-widest text-white/40 pt-6 border-t border-white/5 italic">
-                    Logged in Registry on <?php echo date('F d, Y @ H:i', strtotime($msg['replied_at'])); ?>
-                </div>
             </div>
-        <?php else: ?>
-            <div class="bg-[#0a0a0a] border border-white/10 p-12 rounded-[3rem]">
-                <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-white/80 mb-10">Dispatch Response</h3>
-                
-                <?php if($info): ?>
-                    <div class="mb-8 p-4 bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-black uppercase tracking-widest rounded-2xl text-center italic"><?php echo $info; ?></div>
-                <?php endif; ?>
-                
-                <?php if($error): ?>
-                    <div class="mb-8 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-2xl text-center italic"><?php echo $error; ?></div>
-                <?php endif; ?>
+        <?php endforeach; ?>
+    </div>
 
-                <form action="message-view.php?id=<?php echo $id; ?>" method="POST" class="space-y-8">
-                    <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
-                    <div>
-                        <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4 ml-2">Response Payload (Standard Casing)</label>
-                        <textarea name="reply_body" rows="8" required placeholder="Enter response content..." class="w-full bg-white/[0.03] border border-white/10 p-8 rounded-3xl text-white text-lg outline-none focus:border-amber-600 transition-all font-medium no-scrollbar shadow-inner"></textarea>
-                    </div>
-                    <button type="submit" class="w-full py-7 bg-white text-black font-black uppercase text-[11px] tracking-[0.6em] hover:bg-amber-600 hover:text-white transition-all rounded-full shadow-2xl">
-                        Acknowledge & Dispatch
-                    </button>
-                </form>
-            </div>
+    <!-- Dispatch Station -->
+    <div class="bg-[#0a0a0a] border border-white/10 p-12 rounded-[3.5rem] shadow-2xl">
+        <h3 class="text-[10px] font-black uppercase tracking-[0.5em] text-white/80 mb-10 italic">Dispatch Station</h3>
+        
+        <?php if($info): ?>
+            <div class="mb-8 p-4 bg-green-500/10 border border-green-500/20 text-green-500 text-[10px] font-black uppercase tracking-widest rounded-3xl text-center italic"><?php echo e($info); ?></div>
         <?php endif; ?>
+        
+        <?php if(isset($error)): ?>
+            <div class="mb-8 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] font-black uppercase tracking-widest rounded-3xl text-center italic"><?php echo $error; ?></div>
+        <?php endif; ?>
+
+        <form action="" method="POST" class="space-y-8">
+            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+            <div>
+                <label class="text-[9px] font-black uppercase tracking-widest text-white/40 block mb-4 ml-2">Secure Payload (Auto-Threaded)</label>
+                <textarea name="reply_body" rows="6" required placeholder="Enter follow-up message..." class="w-full bg-white/[0.03] border border-white/10 p-8 rounded-[2rem] text-white text-lg outline-none focus:border-amber-600 transition-all font-medium no-scrollbar shadow-inner"></textarea>
+            </div>
+            <button type="submit" class="w-full py-7 bg-white text-black font-black uppercase text-[11px] tracking-[0.6em] hover:bg-amber-600 hover:text-white transition-all rounded-full shadow-2xl">
+                Acknowledge & Dispatch
+            </button>
+        </form>
     </div>
 </div>
 
