@@ -152,6 +152,7 @@ header {
 .hero-content {
     max-width: 520px;
     padding: 2rem 0;
+    text-align: left;
 }
 
 .hero-actions {

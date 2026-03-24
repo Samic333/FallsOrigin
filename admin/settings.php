@@ -4,6 +4,18 @@ require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
 
+// Auto-patch: Ensure settings table and hero_image key exist
+$db->exec("CREATE TABLE IF NOT EXISTS settings (
+    setting_key VARCHAR(50) PRIMARY KEY,
+    setting_value TEXT NOT NULL
+)");
+$check = $db->prepare("SELECT setting_key FROM settings WHERE setting_key = 'hero_image'");
+$check->execute();
+if (!$check->fetch()) {
+    $db->prepare("INSERT INTO settings (setting_key, setting_value) VALUES (?, ?)")
+       ->execute(['hero_image', 'assets/img/hero-coffee.png']);
+}
+
 // Handle Settings Update
 $message = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

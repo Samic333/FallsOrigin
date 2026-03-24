@@ -53,7 +53,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
                 Identity Mgt
             </a>
             <a href="settings.php" class="block px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] transition-all <?php echo $currentPage === 'settings.php' ? 'bg-amber-600 text-white' : 'text-white/70 hover:bg-white/5 hover:text-white'; ?>">
-                System Matrix
+                Hero & Settings
             </a>
         </nav>
         
