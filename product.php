@@ -23,15 +23,10 @@ $reviews = $reviewsStmt->fetchAll();
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-24">
             <!-- Product Vis -->
             <?php 
-                $imageMap = [
-                    'Yirgacheffe' => 'yirgacheffe.png',
-                    'Sidamo' => 'sidamo.png',
-                    'Guji' => 'guji.png'
-                ];
-                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
+                $imgUrl = !empty($product['image_url']) ? $product['image_url'] : 'assets/img/product_front.png';
             ?>
             <div class="bg-[#0a0a0a] border border-white/5 rounded-[4rem] p-16 flex items-center justify-center sticky top-32 h-[75vh] shadow-2xl">
-                <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="max-w-[85%] max-h-full object-contain" style="image-rendering: -webkit-optimize-contrast;">
+                <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="max-w-[85%] max-h-full object-contain" style="image-rendering: -webkit-optimize-contrast;">
             </div>
 
             <!-- Product Data -->

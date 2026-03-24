@@ -38,13 +38,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Handle image upload
     $image_url = $product['image_url'] ?? 'assets/img/product_front.png';
     if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-        $uploadDir = __DIR__ . '/../assets/img/';
-        $fileName = time() . '_' . basename($_FILES['image']['name']);
+        $uploadDir = __DIR__ . '/../uploads/products/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+        $fileName = time() . '_' . preg_replace('/[^A-Za-z0-9.\-_]/', '', basename($_FILES['image']['name']));
         $targetPath = $uploadDir . $fileName;
         if (move_uploaded_file($_FILES['image']['tmp_name'], $targetPath)) {
-            $image_url = 'assets/img/' . $fileName;
+            $image_url = 'uploads/products/' . $fileName;
         } else {
-            $error = 'Failed to upload image.';
+            $error = 'Failed to upload image. Please check directory permissions.';
         }
     }
 

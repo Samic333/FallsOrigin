@@ -43,18 +43,13 @@ $products = $stmt->fetchAll();
         <!-- Product Grid -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             <?php 
-            $imageMap = [
-                'Yirgacheffe' => 'yirgacheffe.png',
-                'Sidamo' => 'sidamo.png',
-                'Guji' => 'guji.png'
-            ];
             foreach ($products as $product): 
-                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
+                $imgUrl = !empty($product['image_url']) ? $product['image_url'] : 'assets/img/product_front.png';
             ?>
             <div class="product-card">
                 <a href="product.php?id=<?php echo $product['id']; ?>" class="block px-10 py-12 text-decoration-none">
                     <div class="product-image-container mb-8 overflow-hidden rounded-lg bg-black/20 border border-white/5">
-                        <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-full h-auto transform transition-transform duration-700 hover:scale-110" style="image-rendering: -webkit-optimize-contrast;">
+                        <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-full h-auto transform transition-transform duration-700 hover:scale-110" style="image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <div class="space-y-4">
                         <div class="flex justify-between items-start">
