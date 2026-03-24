@@ -15,35 +15,35 @@ $pendingReviews = $db->query("SELECT COUNT(*) FROM reviews WHERE LOWER(status) =
 
 <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-16">
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Total Revenue</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Total Revenue</p>
         <h3 class="text-4xl font-serif font-bold text-white tracking-tighter">$<?php echo number_format($totalRevenue, 2); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Total Orders</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Total Orders</p>
         <h3 class="text-4xl font-serif font-bold text-white tracking-tighter"><?php echo str_pad($totalOrders, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Pending Orders</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Pending Orders</p>
         <h3 class="text-4xl font-serif font-bold text-amber-600 tracking-tighter"><?php echo str_pad($pendingOrders, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Shipped Orders</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Shipped Orders</p>
         <h3 class="text-4xl font-serif font-bold text-white/70 tracking-tighter"><?php echo str_pad($shippedOrders, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Total Products</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Total Products</p>
         <h3 class="text-4xl font-serif font-bold text-white tracking-tighter"><?php echo str_pad($totalProducts, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Low-Stock</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Low-Stock</p>
         <h3 class="text-4xl font-serif font-bold text-red-500 tracking-tighter"><?php echo str_pad($lowStockProducts, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Unread Msgs</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Unread Msgs</p>
         <h3 class="text-4xl font-serif font-bold text-amber-600 tracking-tighter"><?php echo str_pad($unreadMessages, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
     <div class="bg-[#0a0a0a] border border-white/5 p-8 rounded-[2rem] relative overflow-hidden group">
-        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/20 mb-3">Pending Reviews</p>
+        <p class="text-[9px] font-black uppercase tracking-[0.4em] text-white/50 mb-3">Pending Reviews</p>
         <h3 class="text-4xl font-serif font-bold text-amber-600 tracking-tighter"><?php echo str_pad($pendingReviews, 2, '0', STR_PAD_LEFT); ?></h3>
     </div>
 </div>
@@ -56,7 +56,7 @@ $pendingReviews = $db->query("SELECT COUNT(*) FROM reviews WHERE LOWER(status) =
                 <p class="text-[10px] font-black uppercase tracking-widest text-amber-600 group-hover:text-amber-500 transition-colors">Manage Orders</p>
             </a>
             <a href="messages.php" class="p-6 bg-white/5 border border-white/5 rounded-2xl hover:border-amber-600/30 transition-all group">
-                <p class="text-[10px] font-black uppercase tracking-widest text-white/40 group-hover:text-amber-500 transition-colors">View Inquiries</p>
+                <p class="text-[10px] font-black uppercase tracking-widest text-white/70 group-hover:text-amber-500 transition-colors">View Inquiries</p>
             </a>
         </div>
     </div>
