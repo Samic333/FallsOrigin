@@ -12,10 +12,12 @@ $featuredProduct = $products[0] ?? null;
 
 <!-- Hero Section -->
 <section class="hero-section">
-    <div class="hero-bg-image"></div>
-    <div class="hero-overlay"></div>
+    <div class="hero-bg-container">
+        <img src="assets/img/hero-coffee.png" alt="Falls Origin Heritage" class="hero-master-img">
+        <div class="hero-overlay"></div>
+    </div>
     
-    <div class="container">
+    <div class="container hero-layout-container">
         <div class="hero-content">
             <h1 class="display-title font-serif">
                 <?php echo __('hero_title_1'); ?> <span style="color: var(--accent-gold);"><?php echo __('hero_title_2'); ?></span> <br>
@@ -24,7 +26,7 @@ $featuredProduct = $products[0] ?? null;
             <p class="hero-description">
                 <?php echo __('hero_subtext'); ?>
             </p>
-            <div class="hero-actions" style="display: flex; gap: 1.5rem;">
+            <div class="hero-actions">
                 <a href="shop.php" class="btn btn-gold"><?php echo __('shop_now'); ?></a>
                 <a href="#collection" class="btn btn-outline"><?php echo __('view_collection'); ?></a>
             </div>
