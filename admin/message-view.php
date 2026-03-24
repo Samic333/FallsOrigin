@@ -9,7 +9,7 @@ $id = $_GET['id'] ?? null;
 if (!$id) { header('Location: messages.php'); exit; }
 
 $stmt = $db->prepare("SELECT * FROM contact_messages WHERE id = ?");
-$stmt->execute([id]);
+$stmt->execute([$id]);
 $msg = $stmt->fetch();
 
 if (!$msg) { header('Location: messages.php'); exit; }
