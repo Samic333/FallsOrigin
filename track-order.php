@@ -8,15 +8,28 @@ $email = $_GET['email'] ?? null;
 $order = null;
 
 if ($token) {
-    $db = DB::getInstance();
-    $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? OR tracking_token = ?");
-    $stmt->execute([$token, $token]);
-    $order = $stmt->fetch();
+    try {
+        $db = DB::getInstance();
+        $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? OR tracking_token = ?");
+        $stmt->execute([$token, $token]);
+        $order = $stmt->fetch();
+    } catch (PDOException $e) {
+        $error = "Error retrieving order details.";
+    }
 } elseif ($order_number && $email) {
-    $db = DB::getInstance();
-    $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? AND email = ?");
-    $stmt->execute([$order_number, $email]);
-    $order = $stmt->fetch();
+    try {
+        $db = DB::getInstance();
+        $stmt = $db->prepare("SELECT * FROM orders WHERE id = ? AND customer_email = ?");
+        $stmt->execute([$order_number, $email]);
+        $result = $stmt->fetch();
+        if ($result) {
+            $order = $result;
+        } else {
+            $error = "No order found with these credentials.";
+        }
+    } catch (PDOException $e) {
+        $error = "Database error occurred.";
+    }
 }
 ?>
 

@@ -49,38 +49,47 @@
 
     <script>
         // Mobile Drawer Toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const closeMenuBtn = document.getElementById('closeMenuBtn');
-        const mobileDrawer = document.getElementById('mobileDrawer');
-        const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
-        
         function toggleMobileMenu() {
-            if (!mobileDrawer) return;
-            if (mobileDrawer.classList.contains('translate-x-full')) {
+            const drawer = document.getElementById('mobileDrawer');
+            const backdrop = document.getElementById('mobileMenuBackdrop');
+            if (!drawer || !backdrop) return;
+
+            const isOpen = !drawer.classList.contains('translate-x-full');
+            console.log('Mobile menu toggle. Current state (open):', isOpen);
+
+            if (!isOpen) {
                 // Open
-                if (mobileMenuBackdrop) {
-                    mobileMenuBackdrop.classList.remove('hidden');
-                    void mobileMenuBackdrop.offsetWidth;
-                    mobileMenuBackdrop.classList.remove('opacity-0');
-                    mobileMenuBackdrop.classList.add('opacity-100');
-                }
-                mobileDrawer.classList.remove('translate-x-full');
-                document.body.classList.add('overflow-hidden');
+                backdrop.classList.remove('hidden');
+                setTimeout(() => {
+                    backdrop.classList.remove('opacity-0');
+                    backdrop.classList.add('opacity-100');
+                    drawer.classList.remove('translate-x-full');
+                    document.body.style.overflow = 'hidden';
+                }, 10);
             } else {
                 // Close
-                if (mobileMenuBackdrop) {
-                    mobileMenuBackdrop.classList.remove('opacity-100');
-                    mobileMenuBackdrop.classList.add('opacity-0');
-                    setTimeout(() => mobileMenuBackdrop.classList.add('hidden'), 300);
-                }
-                mobileDrawer.classList.add('translate-x-full');
-                document.body.classList.remove('overflow-hidden');
+                backdrop.classList.remove('opacity-100');
+                backdrop.classList.add('opacity-0');
+                drawer.classList.add('translate-x-full');
+                document.body.style.overflow = '';
+                setTimeout(() => {
+                    backdrop.classList.add('hidden');
+                }, 300);
             }
         }
 
-        if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleMobileMenu);
-        if (closeMenuBtn) closeMenuBtn.addEventListener('click', toggleMobileMenu);
-        if (mobileMenuBackdrop) mobileMenuBackdrop.addEventListener('click', toggleMobileMenu);
+        document.addEventListener('DOMContentLoaded', () => {
+            const btns = ['mobileMenuBtn', 'closeMenuBtn', 'mobileMenuBackdrop'];
+            btns.forEach(id => {
+                const el = document.getElementById(id);
+                if (el) {
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        toggleMobileMenu();
+                    });
+                }
+            });
+        });
 
         // Global Toast Notification System
         function showToast(message, cartLink = false) {

@@ -27,6 +27,10 @@ $reviews = $reviewsStmt->fetchAll();
 
             <!-- Product Data -->
             <div class="py-12">
+                <a href="shop.php" class="inline-flex items-center text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-amber-600 transition-colors mb-8 group no-underline">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="mr-2 transform group-hover:-translate-x-1 transition-transform"><path d="m15 18-6-6 6-6"/></svg>
+                    Back to Collection
+                </a>
                 <div class="mb-12">
                     <span class="text-amber-600 text-[11px] font-black uppercase tracking-[0.5em] mb-4 block italic"><?php echo __('provenance'); ?> - <?php echo htmlspecialchars($product['origin'] ?? 'Blend'); ?></span>
                     <h1 class="text-7xl font-serif font-bold text-white uppercase tracking-tighter italic leading-[0.8] mb-8"><?php echo htmlspecialchars($product['name']); ?></h1>
