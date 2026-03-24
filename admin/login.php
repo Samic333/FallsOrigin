@@ -11,14 +11,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'];
 
     $db = DB::getInstance();
-    $stmt = $db->prepare("SELECT * FROM admins WHERE username = ?");
+    $stmt = $db->prepare("SELECT * FROM admin_users WHERE username = ?");
     $stmt->execute([$username]);
     $user = $stmt->fetch();
 
     if ($user && password_verify($password, $user['password_hash'])) {
         $_SESSION['admin_logged_in'] = true;
         $_SESSION['admin_user'] = $user['username'];
-        $db->prepare("UPDATE admins SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
+        $db->prepare("UPDATE admin_users SET last_login = NOW() WHERE id = ?")->execute([$user['id']]);
         log_admin_action('Login', 'Admin user ' . $user['username'] . ' successfully authenticated.');
         header('Location: dashboard.php');
         exit;

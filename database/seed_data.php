@@ -70,5 +70,21 @@ foreach ($products as $p) {
     }
 }
 
+// Seed Admin User
+$adminUser = [
+    'username' => 'admin@fallscoffee.ca',
+    'email' => 'admin@fallscoffee.ca',
+    'password' => 'FallsCoffee#2026'
+];
+
+try {
+    $hashed = password_hash($adminUser['password'], PASSWORD_DEFAULT);
+    $stmt = $db->prepare("INSERT IGNORE INTO admin_users (username, email, password_hash) VALUES (?, ?, ?)");
+    $stmt->execute([$adminUser['username'], $adminUser['email'], $hashed]);
+    echo "Seeded: Admin Identity (" . $adminUser['username'] . ")\n";
+} catch (PDOException $e) {
+    echo "Failed to seed Admin Identity: " . $e->getMessage() . "\n";
+}
+
 echo "\nDone!\n";
 ?>
