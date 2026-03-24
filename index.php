@@ -55,7 +55,6 @@ $heroOverlayStr = $settings['hero_overlay_strength'] ?? '0.6';
                 </a>
                 <?php if (isset($product['stock_quantity']) && $product['stock_quantity'] <= 0): ?>
                     <div style="margin-top: 1rem;">
-                        <link rel="stylesheet" href="assets/css/premium.css?v=<?php echo time(); ?>">
                         <button class="btn" style="width: 100%; background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.1); cursor: not-allowed; min-height: 48px;" disabled>Out of Stock</button>
                     </div>
                 <?php else: ?>
