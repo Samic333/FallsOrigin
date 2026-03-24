@@ -88,14 +88,19 @@ $messages = $db->query("SELECT * FROM contact_messages WHERE $where AND deleted_
                             <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-amber-600 transition-colors">Archive</button>
                         </form>
                         <?php else: ?>
-                        <form action="messages.php?view=archived" method="POST" class="flex items-center gap-6">
-                            <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
-                            <input type="hidden" name="restore_id" value="<?php echo $m['id']; ?>">
-                            <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-green-500/60 hover:text-green-500 transition-colors">Restore</button>
+                        <div class="flex items-center gap-6">
+                            <form action="messages.php?view=archived" method="POST">
+                                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                                <input type="hidden" name="restore_id" value="<?php echo $m['id']; ?>">
+                                <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-green-500/60 hover:text-green-500 transition-colors">Restore</button>
+                            </form>
                             
-                            <input type="hidden" name="perm_delete_id" value="<?php echo $m['id']; ?>">
-                            <button type="submit" onclick="return confirm('WARNING: THIS ACTION IS IRREVERSIBLE. PURGE THIS RECORD FROM THE SOURCE?');" form="none" class="text-[10px] font-black uppercase tracking-widest text-red-500/40 hover:text-red-500 transition-colors" name="perm_delete_btn">Purge</button>
-                        </form>
+                            <form action="messages.php?view=archived" method="POST" onsubmit="return confirm('DANGER: This purged the record from the database. Proceed?');">
+                                <input type="hidden" name="csrf_token" value="<?php echo get_csrf_token(); ?>">
+                                <input type="hidden" name="perm_delete_id" value="<?php echo $m['id']; ?>">
+                                <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-red-500/40 hover:text-red-500 transition-colors">Purge</button>
+                            </form>
+                        </div>
                         <?php endif; ?>
                     </div>
                 </div>
@@ -104,18 +109,5 @@ $messages = $db->query("SELECT * FROM contact_messages WHERE $where AND deleted_
         </div>
     </div>
 </div>
-
-<script>
-document.querySelectorAll('button[name="perm_delete_btn"]').forEach(btn => {
-    btn.addEventListener('click', function(e) {
-        if(!confirm('WARNING: THIS ACTION IS IRREVERSIBLE. PURGE THIS RECORD FROM THE SOURCE?')) {
-            e.preventDefault();
-            return false;
-        }
-        this.closest('form').querySelector('input[name="restore_id"]').remove();
-        this.closest('form').submit();
-    });
-});
-</script>
 
 </main></div></body></html>
