@@ -26,14 +26,11 @@ function send_customer_email($to_email, $subject, $body) {
         define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
     }
     
-    // Explicit UTF-8 headers
+    // Simple headers for maximum compatibility
     $headers = "From: " . ADMIN_EMAIL . "\r\n";
     $headers .= "Reply-To: " . ADMIN_EMAIL . "\r\n";
-    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    $headers .= "MIME-Version: 1.0\r\n";
     $headers .= "X-Mailer: PHP/" . phpversion();
     
-    // The -f flag sets the 'Return-Path' and is mandatory on many Namecheap servers
-    return mail($to_email, $subject, $body, $headers, "-f" . ADMIN_EMAIL);
+    return mail($to_email, $subject, $body, $headers);
 }
 ?>
