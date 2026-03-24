@@ -61,6 +61,16 @@ $messages = $db->query("SELECT * FROM contact_messages WHERE $where AND directio
                     <div class="flex-grow">
                         <div class="flex items-center gap-6 mb-5">
                             <span class="text-[9px] font-black font-mono text-white/40 tracking-widest border border-white/10 px-2 py-0.5 rounded">#<?php echo $m['id']; ?></span>
+                            <?php 
+                                // Get thread count
+                                $tCount = $db->prepare("SELECT COUNT(*) FROM contact_messages WHERE email = ? AND deleted_at IS NULL");
+                                $tCount->execute([$m['email']]);
+                                $count = $tCount->fetchColumn();
+                                if($count > 1):
+                            ?>
+                                <span class="text-[8px] font-black uppercase tracking-widest text-white/40 bg-white/5 px-3 py-1 rounded"><?php echo $count; ?> LOGS IN THREAD</span>
+                            <?php endif; ?>
+                            
                             <?php if($m['status'] === 'Unread'): ?>
                                 <span class="text-[8px] font-black uppercase tracking-widest text-amber-500 bg-amber-500/10 px-3 py-1 rounded shadow-sm">NEW INQUIRY</span>
                             <?php elseif($m['status'] === 'Replied'): ?>
