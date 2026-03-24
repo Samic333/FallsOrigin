@@ -37,6 +37,8 @@ CREATE TABLE IF NOT EXISTS `products` (
   `weight` varchar(50) NOT NULL DEFAULT '340g',
   `description` text NOT NULL,
   `tasting_notes` varchar(255) DEFAULT NULL,
+  `brewing_suggestions` text DEFAULT NULL,
+  `origin_story` text DEFAULT NULL,
   `image_url` varchar(255) NOT NULL DEFAULT 'assets/img/product_front.png',
   `stock_quantity` int(11) NOT NULL DEFAULT 0,
   `is_active` tinyint(1) NOT NULL DEFAULT 1,
