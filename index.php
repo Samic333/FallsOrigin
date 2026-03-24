@@ -4,17 +4,8 @@ require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
 // Fetch 3 featured products for the collection section
-$stmt = $db->query("SELECT * FROM products LIMIT 3");
+$stmt = $db->query("SELECT * FROM products WHERE is_active = 1 ORDER BY is_featured DESC, created_at DESC LIMIT 3");
 $products = $stmt->fetchAll();
-
-// Mock data for preview if database is empty
-if (empty($products)) {
-    $products = [
-        ['id' => 1, 'name' => 'Yirgacheffe', 'price' => 19.99, 'description' => 'Bright, floral, and complex notes.'],
-        ['id' => 2, 'name' => 'Sidamo', 'price' => 19.99, 'description' => 'Deep berry notes with a smooth finish.'],
-        ['id' => 3, 'name' => 'Guji', 'price' => 19.99, 'description' => 'Sweet citrus and balanced acidity.']
-    ];
-}
 
 $featuredProduct = $products[0] ?? null;
 ?>

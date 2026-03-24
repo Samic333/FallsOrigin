@@ -77,9 +77,19 @@ $products = $stmt->fetchAll();
                     <td class="px-10 py-8">
                         <div class="flex items-center gap-4">
                             <?php if ($product['image_url']): ?>
-                                <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" alt="" class="w-10 h-10 rounded object-cover border border-white/10">
+                                <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" alt="" class="w-10 h-10 rounded object-cover border <?php echo $product['is_featured'] ? 'border-amber-500' : 'border-white/10'; ?>">
                             <?php endif; ?>
-                            <span class="text-xs font-bold uppercase tracking-tight text-white"><?php echo htmlspecialchars($product['name']); ?></span>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold uppercase tracking-tight text-white"><?php echo htmlspecialchars($product['name']); ?></span>
+                                <div class="flex gap-2 mt-1">
+                                    <?php if ($product['is_featured']): ?>
+                                        <span class="text-[8px] font-black uppercase tracking-widest text-amber-500 bg-amber-500/10 px-2 py-0.5 rounded">Featured</span>
+                                    <?php endif; ?>
+                                    <?php if (!$product['is_active']): ?>
+                                        <span class="text-[8px] font-black uppercase tracking-widest text-white/20 bg-white/5 px-2 py-0.5 rounded">Inactive</span>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </td>
                     <td class="px-10 py-8 font-serif font-bold text-white">

@@ -28,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = $_POST['description'] ?? '';
     $stock_quantity = $_POST['stock_quantity'] ?? 0;
     $is_active = isset($_POST['is_active']) ? 1 : 0;
+    $is_featured = isset($_POST['is_featured']) ? 1 : 0;
     $id = $_POST['id'] ?? null;
     
     $tasting_notes = $_POST['tasting_notes'] ?? '';
@@ -51,30 +52,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($error)) {
         try {
             if ($id) {
-                $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, is_active=?, category_id=?, tasting_notes=?, brewing_suggestions=?, origin_story=? WHERE id=?");
-                $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $category_id, $tasting_notes, $brewing_suggestions, $origin_story, $id]);
+                $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, is_active=?, is_featured=?, category_id=?, tasting_notes=?, brewing_suggestions=?, origin_story=? WHERE id=?");
+                $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $is_featured, $category_id, $tasting_notes, $brewing_suggestions, $origin_story, $id]);
                 $success = "Product updated successfully.";
             } else {
-                // simple slug generator
                 $slug = strtolower(trim(preg_replace('/[^A-Za-z0-9-]+/', '-', $name)));
-                $stmt = $db->prepare("INSERT INTO products (slug, name, origin, price, weight, description, image_url, stock_quantity, is_active, category_id, tasting_notes, brewing_suggestions, origin_story) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$slug, $name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $category_id, $tasting_notes, $brewing_suggestions, $origin_story]);
+                $stmt = $db->prepare("INSERT INTO products (slug, name, origin, price, weight, description, image_url, stock_quantity, is_active, is_featured, category_id, tasting_notes, brewing_suggestions, origin_story) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$slug, $name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $is_active, $is_featured, $category_id, $tasting_notes, $brewing_suggestions, $origin_story]);
                 $id = $db->lastInsertId();
                 $success = "Product created successfully.";
             }
         } catch(PDOException $e) {
-            // Check if missing column in mock/DB schema:
-            $error = "Legacy schema detected. " . $e->getMessage();
-            try {
-                if ($id) {
-                    $stmt = $db->prepare("UPDATE products SET name=?, origin=?, price=?, weight=?, description=?, image_url=?, stock_quantity=?, tasting_notes=?, brewing_suggestions=?, origin_story=? WHERE id=?");
-                    $stmt->execute([$name, $origin, $price, $weight, $description, $image_url, $stock_quantity, $tasting_notes, $brewing_suggestions, $origin_story, $id]);
-                    $success = "Product updated (legacy fallback).";
-                    $error = "";
-                }
-            } catch(PDOException $e2) {
-                // final fallback
-            }
+            $error = "Database error: " . $e->getMessage();
         }
         
         // Refresh product data
@@ -182,9 +171,15 @@ try {
                 <p class="text-[10px] uppercase font-bold tracking-widest text-white/30 mt-4">Leave empty to keep current image.</p>
             </div>
             
-            <div class="flex items-center gap-4">
-                <input type="checkbox" name="is_active" id="is_active" <?php echo (!isset($product) || isset($product['is_active']) && $product['is_active']) ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
-                <label for="is_active" class="text-[10px] font-black uppercase tracking-widest text-white/80 cursor-pointer">Product is Active</label>
+            <div class="flex items-center gap-8">
+                <div class="flex items-center gap-4">
+                    <input type="checkbox" name="is_active" id="is_active" <?php echo (!isset($product) || isset($product['is_active']) && $product['is_active']) ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
+                    <label for="is_active" class="text-[10px] font-black uppercase tracking-widest text-white/80 cursor-pointer">Product is Active</label>
+                </div>
+                <div class="flex items-center gap-4">
+                    <input type="checkbox" name="is_featured" id="is_featured" <?php echo (isset($product['is_featured']) && $product['is_featured']) ? 'checked' : ''; ?> class="accent-amber-600 w-4 h-4">
+                    <label for="is_featured" class="text-[10px] font-black uppercase tracking-widest text-white/80 cursor-pointer">Feature on Homepage</label>
+                </div>
             </div>
 
             <button type="submit" class="w-full py-6 bg-amber-600 hover:bg-amber-500 text-white font-black uppercase text-[11px] tracking-[0.5em] rounded-2xl transition-all">

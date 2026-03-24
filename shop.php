@@ -49,16 +49,20 @@ $products = $stmt->fetchAll();
                 'Guji' => 'guji.png'
             ];
             foreach ($products as $product): 
-                $imgName = $imageMap[$product['name']] ?? 'product_front.png';
             ?>
             <div class="product-card">
                 <a href="product.php?id=<?php echo $product['id']; ?>" class="block px-10 py-12 text-decoration-none">
                     <div class="product-image-container mb-8 overflow-hidden rounded-lg bg-black/20 border border-white/5">
-                        <img src="assets/img/<?php echo $imgName; ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-full h-auto transform transition-transform duration-700 hover:scale-110" style="image-rendering: -webkit-optimize-contrast;">
+                        <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="w-full h-auto transform transition-transform duration-700 hover:scale-110" style="image-rendering: -webkit-optimize-contrast;">
                     </div>
                     <div class="space-y-4">
                         <div class="flex justify-between items-start">
-                            <h3 class="text-2xl font-serif font-bold text-white transition-colors uppercase tracking-tight"><?php echo htmlspecialchars($product['name']); ?></h3>
+                            <div>
+                                <h3 class="text-2xl font-serif font-bold text-white transition-colors uppercase tracking-tight"><?php echo htmlspecialchars($product['name']); ?></h3>
+                                <?php if (!empty($product['tasting_notes'])): ?>
+                                    <p class="text-[9px] text-amber-600/60 uppercase tracking-[0.2em] mt-1 font-black"><?php echo htmlspecialchars($product['tasting_notes']); ?></p>
+                                <?php endif; ?>
+                            </div>
                             <span class="text-amber-600 text-sm font-bold tracking-widest mt-1">$<?php echo number_format($product['price'], 2); ?></span>
                         </div>
                         <p class="text-white/40 text-[11px] uppercase font-medium tracking-wide leading-relaxed line-clamp-2">
