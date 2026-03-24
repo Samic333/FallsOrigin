@@ -55,7 +55,7 @@ try {
     }
 
     $logs = $db->query("SELECT * FROM admin_audit_logs ORDER BY created_at DESC LIMIT 50")->fetchAll();
-    $admins = $db->query("SELECT * FROM admin_users")->fetchAll();
+    $admins = $db->query("SELECT * FROM admins")->fetchAll();
     $settings_data = $db->query("SELECT * FROM settings")->fetchAll(PDO::FETCH_KEY_PAIR);
 
 } catch (PDOException $e) {
