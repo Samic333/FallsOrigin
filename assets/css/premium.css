@@ -128,14 +128,14 @@ header {
     height: 100%;
     background: url('../img/hero-coffee.png') center right/cover no-repeat;
     z-index: -1;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    filter: brightness(1.15) contrast(1.1);
+    image-rendering: auto;
 }
 
 .hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to right, #0B0F14 30%, rgba(11, 15, 20, 0.7) 60%, transparent 100%);
+    background: linear-gradient(to right, #0B0F14 25%, rgba(11, 15, 20, 0.4) 50%, transparent 100%);
     z-index: 0;
 }
 
