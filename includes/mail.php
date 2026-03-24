@@ -26,8 +26,10 @@ function send_customer_email($to_email, $subject, $body) {
         define('ADMIN_EMAIL', 'admin@fallscoffee.ca');
     }
     
-    // Absolute minimal header for Namecheap baseline
-    $headers = "From: " . ADMIN_EMAIL;
+    // Linux-friendly baseline (LF only)
+    $headers = "From: " . ADMIN_EMAIL . "\n";
+    $headers .= "Reply-To: " . ADMIN_EMAIL . "\n";
+    $headers .= "X-Mailer: PHP/" . phpversion();
     
     return mail($to_email, $subject, $body, $headers);
 }
