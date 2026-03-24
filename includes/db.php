@@ -20,9 +20,12 @@ class DB {
         try {
             $this->pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (\PDOException $e) {
-            error_log("CRITICAL DB ERROR: " . $e->getMessage());
             $this->connection_failed = true;
             $this->pdo = null;
+            // Temporarily output error for urgent troubleshooting
+            echo "<div style='color:red; background:white; padding:10px; border:1px solid red; font-family:monospace; position:fixed; top:0; left:0; z-index:9999;'>";
+            echo "<strong>DATABASE CONNECTION ERROR:</strong> " . htmlspecialchars($e->getMessage());
+            echo "</div>";
         }
     }
 
