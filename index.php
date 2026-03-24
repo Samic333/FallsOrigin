@@ -3,17 +3,46 @@ $pageTitle = 'Home';
 require_once __DIR__ . '/includes/header.php';
 
 $db = DB::getInstance();
-// Fetch 3 featured products for the collection section
-$stmt = $db->query("SELECT * FROM products WHERE is_active = 1 LIMIT 3");
-$products = $stmt->fetchAll();
 
-// Mock data for preview if database is empty
+// Approved Demo Fallback Data
+$defaultProducts = [
+    [
+        'id' => 1,
+        'name' => 'Yirgacheffe',
+        'price' => 19.99,
+        'description' => 'Bright, floral, and complex notes with hints of jasmine and citrus.',
+        'image_url' => 'assets/img/yirgacheffe.png',
+        'stock_quantity' => 10
+    ],
+    [
+        'id' => 2,
+        'name' => 'Sidamo',
+        'price' => 19.99,
+        'description' => 'Deep berry notes with a smooth chocolate finish and medium body.',
+        'image_url' => 'assets/img/sidamo.png',
+        'stock_quantity' => 10
+    ],
+    [
+        'id' => 3,
+        'name' => 'Guji',
+        'price' => 19.99,
+        'description' => 'Sweet citrus and balanced acidity with a complex jasmine aroma.',
+        'image_url' => 'assets/img/guji.png',
+        'stock_quantity' => 10
+    ]
+];
+
+// Fetch active products from DB
+try {
+    $stmt = $db->query("SELECT * FROM products WHERE is_active = 1 LIMIT 3");
+    $products = $stmt->fetchAll();
+} catch (Exception $e) {
+    $products = [];
+}
+
+// If DB is empty or unreachable, use the approved demo products
 if (empty($products)) {
-    $products = [
-        ['id' => 1, 'name' => 'Yirgacheffe', 'price' => 19.99, 'description' => 'Bright, floral, and complex notes.'],
-        ['id' => 2, 'name' => 'Sidamo', 'price' => 19.99, 'description' => 'Deep berry notes with a smooth finish.'],
-        ['id' => 3, 'name' => 'Guji', 'price' => 19.99, 'description' => 'Sweet citrus and balanced acidity.']
-    ];
+    $products = $defaultProducts;
 }
 
 $featuredProduct = $products[0] ?? null;

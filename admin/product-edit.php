@@ -7,12 +7,20 @@ $product = null;
 $error = '';
 $success = '';
 
-if (isset($_GET['id'])) {
-    $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
-    $stmt->execute([$_GET['id']]);
-    $product = $stmt->fetch();
-    if (!$product) {
-        die("Product not found.");
+if (!$db->isConnected()) {
+    $error = "Database connection unavailable. Please check includes/config.php. Changes cannot be saved.";
+}
+
+if (isset($_GET['id']) && $db->isConnected()) {
+    try {
+        $stmt = $db->prepare("SELECT * FROM products WHERE id = ?");
+        $stmt->execute([$_GET['id']]);
+        $product = $stmt->fetch();
+        if (!$product) {
+            die("Product not found.");
+        }
+    } catch (Exception $e) {
+        $error = "Failed to load product: " . $e->getMessage();
     }
 }
 

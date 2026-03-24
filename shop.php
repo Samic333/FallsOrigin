@@ -5,15 +5,59 @@ require_once __DIR__ . '/includes/header.php';
 $db = DB::getInstance();
 $category = $_GET['category'] ?? 'all';
 
-$query = "SELECT * FROM products WHERE is_active = 1";
-$params = [];
-if ($category !== 'all') {
-    $query .= " AND category_id = ?";
-    $params[] = $category;
+// Approved Demo Fallback Data
+$defaultProducts = [
+    [
+        'id' => 1,
+        'name' => 'Yirgacheffe',
+        'price' => 19.99,
+        'description' => 'Bright, floral, and complex notes with hints of jasmine and citrus.',
+        'image_url' => 'assets/img/yirgacheffe.png',
+        'stock_quantity' => 10,
+        'is_active' => 1,
+        'category_id' => null
+    ],
+    [
+        'id' => 2,
+        'name' => 'Sidamo',
+        'price' => 19.99,
+        'description' => 'Deep berry notes with a smooth chocolate finish and medium body.',
+        'image_url' => 'assets/img/sidamo.png',
+        'stock_quantity' => 10,
+        'is_active' => 1,
+        'category_id' => null
+    ],
+    [
+        'id' => 3,
+        'name' => 'Guji',
+        'price' => 19.99,
+        'description' => 'Sweet citrus and balanced acidity with a complex jasmine aroma.',
+        'image_url' => 'assets/img/guji.png',
+        'stock_quantity' => 10,
+        'is_active' => 1,
+        'category_id' => null
+    ]
+];
+
+$products = [];
+try {
+    $query = "SELECT * FROM products WHERE is_active = 1";
+    $params = [];
+    if ($category !== 'all') {
+        $query .= " AND category_id = ?";
+        $params[] = $category;
+    }
+    $stmt = $db->prepare($query);
+    $stmt->execute($params);
+    $products = $stmt->fetchAll();
+} catch (Exception $e) {
+    // DB failed, fall back to default
 }
-$stmt = $db->prepare($query);
-$stmt->execute($params);
-$products = $stmt->fetchAll();
+
+// If DB is empty or unreachable (and searching 'all'), show default products
+if (empty($products) && $category === 'all') {
+    $products = $defaultProducts;
+}
 ?>
 
 <div class="py-12 md:py-16 bg-[#050505] min-h-screen">
