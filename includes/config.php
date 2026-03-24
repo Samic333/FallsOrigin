@@ -21,7 +21,7 @@ define('STRIPE_WEBHOOK_SECRET', 'whsec_your_key_here');
 // App Settings
 define('APP_URL', 'http://localhost/falls-origin');
 define('APP_NAME', 'Falls Origin Coffee');
-define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
+define('ADMIN_EMAIL', 'admin@fallscoffee.ca');
 
 // All security and session utilities moved to functions.php
 ?>

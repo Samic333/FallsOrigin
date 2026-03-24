@@ -23,7 +23,7 @@ function send_review_request($order) {
 
 function send_customer_email($to_email, $subject, $body) {
     if (!defined('ADMIN_EMAIL')) {
-        define('ADMIN_EMAIL', 'admin@fallsorigincoffee.com');
+        define('ADMIN_EMAIL', 'admin@fallscoffee.ca');
     }
     
     // Absolute minimal header for Namecheap baseline
